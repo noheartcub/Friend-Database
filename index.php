@@ -273,8 +273,8 @@ mysqli_close($conn);
 <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- overlayScrollbars -->
 <script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
-<!-- AdminLTE App -->
-<script src="dist/js/adminlte.js"></script>
+<!-- friend App -->
+<script src="dist/js/friend.js"></script>
 
 <!-- PAGE PLUGINS -->
 <!-- jQuery Mapael -->
@@ -285,7 +285,7 @@ mysqli_close($conn);
 <!-- ChartJS -->
 <script src="plugins/chart.js/Chart.min.js"></script>
 
-<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+<!-- friend dashboard demo (This is only for demo purposes) -->
 <script src="dist/js/pages/dashboard2.js"></script>
 </body>
 </html>
