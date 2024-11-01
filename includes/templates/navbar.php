@@ -85,7 +85,18 @@
                     <?php endif; ?>
                 </ul>
             </li>            
+            <?php if (hasRole('admin')): ?>
+            <li class="sub-menu">
+                <a href="javascript:;">
+                    <i class="fa fa-calendar"></i>
+                    <span>Event Management</span>
+                </a>
+                <ul class="sub">
+                        <li><a href="register_event.php">Register new event</a></li>
 
+                    <?php endif; ?>
+                </ul>
+            </li>
             <?php if (hasRole('admin')): ?>
                 <li class="mt">
                 <a href="settings.php">

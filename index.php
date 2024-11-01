@@ -98,7 +98,7 @@ $totalavatars = $pdo->query("SELECT COUNT(*) FROM avatars")->fetchColumn();
               <div class="col-md-3 col-sm-4 mb">
                 <div class="green-panel pn">
                   <div class="green-header">
-                    <h5>Registered Activities</h5>
+                    <h5>Registered Events</h5>
                   </div>
                   <img src="assets/img/icons/extracurricular-activities.png" alt="User Icon" class="icon" style="width: 120px; height: 120px;" />
                   <h3><?php echo $totalActivities; ?></h3>
