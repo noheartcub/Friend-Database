@@ -1,291 +1,208 @@
 <?php
+// Start the session and include necessary files
 session_start();
+include_once 'includes/config.php';
+include_once 'includes/functions.php';
 
-// Include the database configuration file
-require_once 'config/config.php'; // Replace "config/config.php" with the appropriate path to your database configuration file
-require_once 'config/session.php';
-require_once 'config/functions.php';
-
-// Check if the user is not logged in
-if (!isset($_SESSION['loggedin'])) {
-    // Redirect the user to the login page or display an access denied message
-    header('Location: login.php'); // Replace "login.php" with the appropriate URL for your login page
-    exit;
+// Check if the user is logged in
+if (!isLoggedIn()) {
+    header("Location: login.php");
+    exit();
 }
 
-// Your database connection code using the information from the configuration file
-$conn = mysqli_connect($host, $username, $password, $database);
+// Get site settings
+$settings = getSiteSettings();
+// Activity Logs
+$totalactivity_logs = $pdo->query("SELECT COUNT(*) FROM activity_logs")->fetchColumn();
 
-// Check connection
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
+// Fetch total number of people
+$totalPeople = $pdo->query("SELECT COUNT(*) FROM people")->fetchColumn();
+// Fetch total number of activities
+$totalActivities = $pdo->query("SELECT COUNT(*) FROM people_events")->fetchColumn();
+// Fetch total number of activity logs
+$totalActivityLogs = $pdo->query("SELECT COUNT(*) FROM activity_logs")->fetchColumn();
+// Fetch total number of images in the gallery
+$totalPeopleGalleryImages = $pdo->query("SELECT COUNT(*) FROM people_gallery")->fetchColumn();
+// Fetch total number of images in the gallery
+$totalGalleryImages = $pdo->query("SELECT COUNT(*) FROM images")->fetchColumn();
+// Fetch total number of users (if you have a users table)
+$totalavatars = $pdo->query("SELECT COUNT(*) FROM avatars")->fetchColumn();
 
-// Query to count the number of records where Blocked is True
-$queryCountBlocked = "SELECT COUNT(*) AS blocked_count FROM people WHERE Blocked = 'True'";
-$resultCountBlocked = mysqli_query($conn, $queryCountBlocked);
-
-// Query to count the number of records where Defriended is True
-$queryCountDefriended = "SELECT COUNT(*) AS defriended_count FROM people WHERE Defriended = 'True'";
-$resultCountDefriended = mysqli_query($conn, $queryCountDefriended);
-
-// Query to count the number of records where Blocked and Defriended are both False
-$queryCountNoBlockedDefriended = "SELECT COUNT(*) AS no_blocked_defriended_count FROM people WHERE Blocked = 'False' AND Defriended = 'False'";
-$resultCountNoBlockedDefriended = mysqli_query($conn, $queryCountNoBlockedDefriended);
-
-// Query to count the number of all records
-$queryCountNoCare = "SELECT COUNT(*) AS no_care_count FROM people";
-$resultCountNoCare = mysqli_query($conn, $queryCountNoCare);
-
-// Check if the count queries were successful
-if ($resultCountBlocked && $resultCountDefriended && $resultCountNoBlockedDefriended && $resultCountNoCare) {
-    // Fetch the counts from the results
-    $blockedCount = mysqli_fetch_assoc($resultCountBlocked)['blocked_count'];
-    $defriendedCount = mysqli_fetch_assoc($resultCountDefriended)['defriended_count'];
-    $noBlockedDefriendedCount = mysqli_fetch_assoc($resultCountNoBlockedDefriended)['no_blocked_defriended_count'];
-    $noCareCount = mysqli_fetch_assoc($resultCountNoCare)['no_care_count'];
-
-    // Display the counts
-    echo "Blocked Count: " . $blockedCount . "<br>";
-    echo "Defriended Count: " . $defriendedCount . "<br>";
-    echo "No Blocked/Defriended Count: " . $noBlockedDefriendedCount . "<br>";
-    echo "No Care Count: " . $noCareCount . "<br>";
-} else {
-    // Query failed, handle the error accordingly
-    echo "Failed to retrieve counts.";
-}
-
-// Query the settings table to retrieve the site name
-$querySite = "SELECT site_name FROM settings";
-$resultSite = mysqli_query($conn, $querySite);
-
-// Check if the site query was successful
-if ($resultSite) {
-    // Fetch the site name from the result
-    $rowSite = mysqli_fetch_assoc($resultSite);
-    $siteName = $rowSite['site_name'];
-
-    // Now you can use the $siteName variable to access the retrieved site name
-    echo "Site Name: " . $siteName . "<br>";
-} else {
-    // Query failed, handle the error accordingly
-    echo "Failed to retrieve site name.";
-}
-
-// Query the admin table to retrieve the admin name and image path
-$queryAdmin = "SELECT Name, ImagePath FROM admins"; // Replace "admins" with the actual table name
-$resultAdmin = mysqli_query($conn, $queryAdmin);
-
-// Check if the admin query was successful
-if ($resultAdmin && mysqli_num_rows($resultAdmin) > 0) {
-    // Fetch the admin name and image path from the result
-    $rowAdmin = mysqli_fetch_assoc($resultAdmin);
-    $adminName = $rowAdmin['Name'];
-    $imagePath = $rowAdmin['ImagePath'];
-} else {
-    // Query failed or no record found, handle the error accordingly
-    $adminName = "Admin Name Not Found";
-    $imagePath = "path/to/default/image.jpg"; // Replace with the path to your default image
-}
-
-// Close the database connection
-mysqli_close($conn);
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title><?php echo $siteName; ?> - Index</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="Dashboard">
+  <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
+  <title><?php echo htmlspecialchars($settings['site_title']); ?> - Dashboard</title>
 
-  <!-- Google Font: Source Sans Pro -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  <!-- Font Awesome Icons -->
-<script src="https://kit.fontawesome.com/0f77655b20.js" crossorigin="anonymous"></script>
-  <!-- overlayScrollbars -->
-  <link rel="stylesheet" href="plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
-  <!-- Theme style -->
-  <link rel="stylesheet" href="dist/css/friend.min.css">
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Bootstrap core CSS -->
+  <link href="assets/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <!--external css-->
+  <link href="assets/lib/font-awesome/css/font-awesome.css" rel="stylesheet" />
+  <link rel="stylesheet" type="text/css" href="assets/css/zabuto_calendar.css">
+  <link rel="stylesheet" type="text/css" href="assets/lib/gritter/css/jquery.gritter.css" />
+  <!-- Custom styles for this template -->
+  <link href="assets/css/style.css" rel="stylesheet">
+  <link href="assets/css/style-responsive.css" rel="stylesheet">
+  <script src="assets/lib/chart-master/Chart.js"></script>
+
 </head>
-<body class="hold-transition dark-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
-<div class="wrapper">
 
-  <!-- Preloader -->
-  <!-- Navbar -->
-  <nav class="main-header navbar navbar-expand navbar-dark">
-  </nav>
-  <!-- /.navbar -->
+<body>
+  <section id="container">
+    <!-- **********************************************************************************************************************************************************
+        TOP BAR CONTENT & NOTIFICATIONS
+        *********************************************************************************************************************************************************** -->
+    <!--header start-->
+    <?php require 'includes/templates/header.php'; ?>
 
-  <!-- Main Sidebar Container -->
-  <aside class="main-sidebar sidebar-dark-primary elevation-4">
-    <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
-      <span class="brand-text font-weight-light"><?php echo $siteName; ?></span>
-    </a>
-
-    <!-- Sidebar -->
-    <div class="sidebar">
-      <!-- Sidebar user panel (optional) -->
-      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        <div class="image">
-          <img src="<?php echo $imagePath; ?>" class="img-circle elevation-2" alt="User Image">
-        </div>	  
-        <div class="info">
-          <a href="logout.php" class="d-block"><?php echo $adminName; ?></a>
-        </div>
-      </div>
-
-      <!-- SidebarSearch Form -->
-      <div class="form-inline">
-        <div class="input-group" data-widget="sidebar-search">
-          <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
-          <div class="input-group-append">
-            <button class="btn btn-sidebar">
-              <i class="fas fa-search fa-fw"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-<?php include('inc/navbar.php'); ?>
-
-
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <div class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1 class="m-0">Dashboard</h1>
-          </div><!-- /.col -->
-        </div><!-- /.row -->
-      </div><!-- /.container-fluid -->
-    </div>
-    <!-- /.content-header -->
-
-    <!-- Main content -->
-    <section class="content">
-      <div class="container-fluid">
-        <!-- Info boxes -->
+    <!--header end-->
+    <!-- **********************************************************************************************************************************************************
+        MAIN SIDEBAR MENU
+        *********************************************************************************************************************************************************** -->
+    <!--sidebar start-->
+    <?php require 'includes/templates/navbar.php'; ?>
+    
+    <!--sidebar end-->
+    <!-- **********************************************************************************************************************************************************
+        MAIN CONTENT
+        *********************************************************************************************************************************************************** -->
+    <!--main content start-->
+    <section id="main-content">
+      <section class="wrapper">
+      <br>
+      <h1>Dashboard</h1>
+      <br>     
         <div class="row">
-          <div class="col-12 col-sm-6 col-md-3">
-            <div class="info-box">
-              <span class="info-box-icon bg-info elevation-1"><i class="fa-solid fa-user-plus"></i></span>
-
-              <div class="info-box-content">
-                <span class="info-box-text">Added User</span>
-<span class="info-box-number">
-      <?php echo $noBlockedDefriendedCount; ?> <!-- Represents the count of active users -->
-</span>
+           <!--CUSTOM CHART START -->   <!--/ col-md-4 -->
+              <div class="col-md-3 col-sm-4 mb">
+                <div class="green-panel pn">
+                  <div class="green-header">
+                    <h5>Registered Users</h5>
+                  </div>
+                  <img src="assets/img/icons/man.png" alt="User Icon" class="icon" style="width: 120px; height: 120px;" />
+                  <h3><?php echo $totalPeople; ?></h3>
+                </div>
               </div>
-              <!-- /.info-box-content -->
-            </div>
-            <!-- /.info-box -->
-          </div>
-          <!-- /.col -->
-          <div class="col-12 col-sm-6 col-md-3">
-            <div class="info-box mb-3">
-              <span class="info-box-icon bg-danger elevation-1"><i class="fa-solid fa-user-slash"></i></span>
-
-              <div class="info-box-content">
-                <span class="info-box-text">Removed Users</span>
-<span class="info-box-number">
-      <?php echo $defriendedCount; ?> <!-- Represents the count of defriended users -->
-</span>
+              <!-- /col-md-4 -->
+              <div class="col-md-3 col-sm-4 mb">
+                <div class="green-panel pn">
+                  <div class="green-header">
+                    <h5>Registered Activities</h5>
+                  </div>
+                  <img src="assets/img/icons/extracurricular-activities.png" alt="User Icon" class="icon" style="width: 120px; height: 120px;" />
+                  <h3><?php echo $totalActivities; ?></h3>
+                </div>
               </div>
-              <!-- /.info-box-content -->
-            </div>
-            <!-- /.info-box -->
-          </div>
-          <!-- /.col -->
-
-          <!-- fix for small devices only -->
-          <div class="clearfix hidden-md-up"></div>
-
-          <div class="col-12 col-sm-6 col-md-3">
-            <div class="info-box mb-3">
-              <span class="info-box-icon bg-success elevation-1"><i class="fa-solid fa-ban"></i></span>
-
-              <div class="info-box-content">
-                <span class="info-box-text">Blocked Users</span>
-<span class="info-box-number">
-        <?php echo $blockedCount; ?> <!-- Represents the count of blocked users -->
-
-</span>
+              <!-- /col-md-4 -->
+              <div class="col-md-3 col-sm-4 mb">
+                <div class="green-panel pn">
+                  <div class="green-header">
+                    <h5>Registered Images</h5>
+                  </div>
+                  <img src="assets/img/icons/image-files.png" alt="User Icon" class="icon" style="width: 120px; height: 120px;" />
+                  <h3><?php echo $totalGalleryImages; ?></h3>
+                </div>
               </div>
-              <!-- /.info-box-content -->
-            </div>
-            <!-- /.info-box -->
-          </div>
-          <!-- /.col -->
-          <div class="col-12 col-sm-6 col-md-3">
-            <div class="info-box mb-3">
-              <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-users"></i></span>
+              <!-- /col-md-4 -->
+              <div class="col-md-3 col-sm-4 mb">
+                <div class="green-panel pn">
+                  <div class="green-header">
+                    <h5>Registered Avatars</h5>
+                  </div>
+                  <img src="assets/img/icons/cat.png" alt="User Icon" class="icon" style="width: 120px; height: 120px;" />
+                  <h3><?php echo $totalavatars; ?></h3>
+                </div>
+              </div>
+              <!-- /col-md-4 -->
 
-              <div class="info-box-content">
-                <span class="info-box-text">Total Users</span>
-<span class="info-box-number">
-      <?php echo $noCareCount; ?> <!-- Represents the count of all users -->
-</span>              </div>
-              <!-- /.info-box-content -->
-            </div>
-            <!-- /.info-box -->
-          </div>
-          <!-- /.col -->
+          <!-- /col-lg-3 -->
         </div>
-        <!-- /.row -->
-
-        <div class="row">
-          <div class="col-md-12">
-            <!-- /.card -->
-          </div>
-          <!-- /.col -->
-        </div>
-        <!-- /.row -->
-
-        <!-- Main row -->
-        <div class="row">
-          <!-- Left col -->
-         <!-- /.col -->
-        </div>
-        <!-- /.row -->
-      </div><!--/. container-fluid -->
+        <!-- /row -->
+      </section>
     </section>
-    <!-- /.content -->
-  </div>
-  <!-- /.content-wrapper -->
+    <!--main content end-->
+    <!--footer start-->
+    <footer class="site-footer">
+      <div class="text-center">
+        <p>
+          &copy; Copyrights <strong><?php echo htmlspecialchars($settings['site_title']); ?></strong>. All Rights Reserved
+        </p>
+        <a href="index.html#" class="go-top">
+          <i class="fa fa-angle-up"></i>
+          </a>
+      </div>
+    </footer>
+    <!--footer end-->
+  </section>
+  <!-- js placed at the end of the document so the pages load faster -->
+  <script src="assets/lib/jquery/jquery.min.js"></script>
 
-  <!-- Control Sidebar -->
-  <aside class="control-sidebar control-sidebar-dark">
-    <!-- Control sidebar content goes here -->
-  </aside>
-  <!-- /.control-sidebar -->
+  <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
+  <script class="include" type="text/javascript" src="assets/lib/jquery.dcjqaccordion.2.7.js"></script>
+  <script src="assets/lib/jquery.scrollTo.min.js"></script>
+  <script src="assets/lib/jquery.nicescroll.js" type="text/javascript"></script>
+  <script src="assets/lib/jquery.sparkline.js"></script>
+  <!--common script for all pages-->
+  <script src="assets/lib/common-scripts.js"></script>
+  <script type="text/javascript" src="assets/lib/gritter/js/jquery.gritter.js"></script>
+  <script type="text/javascript" src="assets/lib/gritter-conf.js"></script>
+  <!--script for this page-->
+  <script src="assets/lib/sparkline-chart.js"></script>
+  <script src="assets/lib/zabuto_calendar.js"></script>
+  
+  <script type="application/javascript">
+    $(document).ready(function() {
+      $("#date-popover").popover({
+        html: true,
+        trigger: "manual"
+      });
+      $("#date-popover").hide();
+      $("#date-popover").click(function(e) {
+        $(this).hide();
+      });
 
-  <!-- Main Footer -->
-</div>
-<!-- ./wrapper -->
+      $("#my-calendar").zabuto_calendar({
+        action: function() {
+          return myDateFunction(this.id, false);
+        },
+        action_nav: function() {
+          return myNavFunction(this.id);
+        },
+        ajax: {
+          url: "show_data.php?action=1",
+          modal: true
+        },
+        legend: [{
+            type: "text",
+            label: "Special event",
+            badge: "00"
+          },
+          {
+            type: "block",
+            label: "Regular event",
+          }
+        ]
+      });
+    });
 
-<!-- REQUIRED SCRIPTS -->
-<!-- jQuery -->
-<script src="plugins/jquery/jquery.min.js"></script>
-<!-- Bootstrap -->
-<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- overlayScrollbars -->
-<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
-<!-- friend App -->
-<script src="dist/js/friend.js"></script>
-
-<!-- PAGE PLUGINS -->
-<!-- jQuery Mapael -->
-<script src="plugins/jquery-mousewheel/jquery.mousewheel.js"></script>
-<script src="plugins/raphael/raphael.min.js"></script>
-<script src="plugins/jquery-mapael/jquery.mapael.min.js"></script>
-<script src="plugins/jquery-mapael/maps/usa_states.min.js"></script>
-<!-- ChartJS -->
-<script src="plugins/chart.js/Chart.min.js"></script>
-
-<!-- friend dashboard demo (This is only for demo purposes) -->
-<script src="dist/js/pages/dashboard2.js"></script>
+    function myNavFunction(id) {
+      $("#date-popover").hide();
+      var nav = $("#" + id).data("navigation");
+      var to = $("#" + id).data("to");
+      console.log('nav ' + nav + ' to: ' + to.month + '/' + to.year);
+    }
+  </script>
 </body>
+
 </html>
