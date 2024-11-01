@@ -80,6 +80,7 @@
                         <li><a href="add_user.php">Add new Users</a></li>
                         <li><a href="delete_user.php">Delete a User</a></li>
                         <li><a href="edit_user.php">Edit a User</a></li>
+                        <li><a href="suspend_user.php">Suspend a User</a></li>
 
                     <?php endif; ?>
                 </ul>
