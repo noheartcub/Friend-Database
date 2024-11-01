@@ -2,8 +2,8 @@
 session_start();
 
 $configPath = __DIR__ . '/includes/config.php';
-$setupFile = __FILE__;  // Path to the current setup.php file
-$sqlFile = __DIR__ . '/database.sql';  // Path to the database.sql file
+$setupFile = __FILE__;
+$sqlFile = __DIR__ . '/database.sql';
 
 // Check if setup has already been completed
 if (file_exists($configPath) && defined('DB_NAME') && DB_NAME !== '') {
@@ -81,14 +81,20 @@ try {
             unlink($sqlFile);
         }
 
-        echo "Setup completed successfully. You can now log in as admin.";
+        echo "<h3>Setup completed successfully!</h3><p>You can now log in as admin.</p>";
+
+        // Cron job message
+        echo "<p><strong>Optional: Set up a daily cron job to check for updates</strong></p>";
+        echo "<p>To enable automatic update checks, please add the following line to your server's crontab:</p>";
+        echo "<pre>0 0 * * * /usr/bin/php " . __DIR__ . "/check_for_updates.php</pre>";
+        echo "<p>This will run the update check daily at midnight.</p>";
+        
         header("Location: login.php");
         exit();
     } catch (PDOException $e) {
         echo "Error during setup: " . $e->getMessage();
     }
 }
-
 ?>
 
 <!DOCTYPE html>

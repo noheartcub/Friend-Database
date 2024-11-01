@@ -237,6 +237,9 @@ INSERT INTO `settings` (`id`, `setting_key`, `setting_value`) VALUES
 (8, 'smtp_pass', 'your-password'),
 (9, 'smtp_encryption', 'None');
 
+INSERT INTO settings (setting_key, setting_value) VALUES ('current_version', '2.0.0');
+
+
 -- --------------------------------------------------------
 
 --
@@ -271,6 +274,15 @@ CREATE TABLE `user_sessions` (
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   `expires_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+
+CREATE TABLE notifications (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    message TEXT NOT NULL,
+    type ENUM('info', 'warning', 'update') DEFAULT 'info',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_read TINYINT(1) DEFAULT 0
+);
 
 --
 -- Indexes for dumped tables
