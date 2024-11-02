@@ -37,7 +37,6 @@
                     <?php endif; ?>
                 </ul>
             </li>
-
             <li class="sub-menu">
                 <a href="javascript:;">
                     <i class="fa fa-users"></i>
@@ -52,7 +51,6 @@
                     <?php endif; ?>
                 </ul>
             </li>
-
             <li class="sub-menu">
                 <a href="javascript:;">
                     <i class="fa fa-camera"></i>
@@ -67,7 +65,6 @@
                     <?php endif; ?>
                 </ul>
             </li>
-
             <?php if (hasRole('admin')): ?>
             <li class="sub-menu">
                 <a href="javascript:;">
@@ -84,7 +81,7 @@
 
                     <?php endif; ?>
                 </ul>
-            </li>            
+            </li>       
             <?php if (hasRole('admin')): ?>
             <li class="sub-menu">
                 <a href="javascript:;">
@@ -97,6 +94,12 @@
                     <?php endif; ?>
                 </ul>
             </li>
+            <li class="mt">
+                <a href="projects.php">
+                    <i class="fa fa-tasks"></i>
+                    <span>Task List</span>
+                </a>
+            </li>             
             <?php if (hasRole('admin')): ?>
                 <li class="mt">
                 <a href="settings.php">
