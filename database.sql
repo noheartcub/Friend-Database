@@ -284,6 +284,33 @@ CREATE TABLE notifications (
     is_read TINYINT(1) DEFAULT 0
 );
 
+
+CREATE TABLE task_projects (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE tasks (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    project_id INT,
+    category_id INT DEFAULT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    priority ENUM('High', 'Medium', 'Low') DEFAULT 'Medium',
+    due_date DATE DEFAULT NULL,
+    image_path VARCHAR(255) DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (project_id) REFERENCES task_projects(id) ON DELETE CASCADE
+);
+CREATE TABLE task_categories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    project_id INT,
+    FOREIGN KEY (project_id) REFERENCES task_projects(id) ON DELETE CASCADE
+);
+
+
 --
 -- Indexes for dumped tables
 --
