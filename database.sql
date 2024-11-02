@@ -295,7 +295,7 @@ CREATE TABLE tasks (
     id INT AUTO_INCREMENT PRIMARY KEY,
     project_id INT,
     category_id INT DEFAULT NULL,
-    title VARCHAR(255) NOT NULL,
+    task_name VARCHAR(255) NOT NULL,
     description TEXT,
     priority ENUM('High', 'Medium', 'Low') DEFAULT 'Medium',
     due_date DATE DEFAULT NULL,
