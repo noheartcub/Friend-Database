@@ -131,8 +131,8 @@ $people = $peopleStmt->fetchAll(PDO::FETCH_ASSOC);
     <td><?php echo htmlspecialchars($person['is_deaf'] ? 'Deaf' : 'Not Deaf'); ?></td>
 
     <?php if (hasRole('admin') || !$person['hide_birthday']): ?>
-        <td><?php echo htmlspecialchars($person['birthday']); ?></td>
-    <?php else: ?>
+      <td><?php echo htmlspecialchars($person['birthday'] ?? 'Not Entered'); ?></td>
+      <?php else: ?>
         <td>Hidden</td>
     <?php endif; ?>   
     <td>

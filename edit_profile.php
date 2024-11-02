@@ -260,16 +260,16 @@ $settings = getSiteSettings();
                 </div>
                 <div class="form-group">
                     <label for="twitter">Twitter:</label>
-                    <input type="text" name="twitter" class="form-control" value="<?php echo htmlspecialchars($user['twitter']); ?>">
-                </div>
+                    <input type="text" name="twitter" class="form-control" value="<?php echo htmlspecialchars($user['twitter'] ?? ''); ?>">
+                    </div>
                 <div class="form-group">
                     <label for="twitch">Twitch:</label>
-                    <input type="text" name="twitch" class="form-control" value="<?php echo htmlspecialchars($user['twitch']); ?>">
-                </div>
+                    <input type="text" name="twitch" class="form-control" value="<?php echo htmlspecialchars($user['twitch'] ?? ''); ?>">
+                    </div>
                 <div class="form-group">
                     <label for="birthday">Birthday:</label>
-                    <input type="date" name="birthday" class="form-control" value="<?php echo htmlspecialchars($user['birthday']); ?>">
-                </div>
+                    <input type="date" name="birthday" class="form-control" value="<?php echo htmlspecialchars($user['birthday'] ?? ''); ?>">
+                    </div>
                 <div class="form-group">
                     <label for="is_mute">Mute:</label>
                     <select name="is_mute" class="form-control">

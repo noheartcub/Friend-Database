@@ -329,8 +329,8 @@ if (isset($_SESSION['role']) && ($_SESSION['role'] == 'admin' || $_SESSION['role
 <div class="col-sm-5">
     <h1>Birth Date</h1>
     <h3><?php if (hasRole('admin') || !$user['hide_birthday']): ?>
-        <?php echo htmlspecialchars($user['birthday']); ?>
-    <?php else: ?>
+      <?php echo htmlspecialchars($user['birthday'] ?? 'Not Entered'); ?>
+      <?php else: ?>
         Hidden
     <?php endif; ?></h3>
 </div>
