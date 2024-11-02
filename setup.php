@@ -124,7 +124,7 @@ try {
             </div>
             <div class="form-group">
                 <label for="db_pass">Database Password</label>
-                <input type="password" id="db_pass" name="db_pass" class="form-control" required>
+                <input type="password" id="db_pass" name="db_pass" class="form-control">
             </div>
 
             <h4>Site and Admin Configuration</h4>
