@@ -110,3 +110,10 @@ $(document).ready(function() {
   cursor: pointer;
 }
 </style>
+<?php
+// Determine the current page
+$current_page = basename($_SERVER['PHP_SELF']); // Gets the name of the current script
+
+// Get the user ID from the URL if it exists
+$userId = isset($_GET['id']) ? intval($_GET['id']) : null;
+?>
