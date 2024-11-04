@@ -52,11 +52,27 @@ $settings = getSiteSettings();
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title><?php echo htmlspecialchars($settings['site_title']); ?> - Manage Warnings</title>
-    <link href="assets/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="assets/lib/font-awesome/css/font-awesome.css" rel="stylesheet" />
-    <link href="assets/css/style.css" rel="stylesheet">
+<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="Dashboard">
+  <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
+  <title><?php echo htmlspecialchars($settings['site_title']); ?> - Manage Warning</title>
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Bootstrap core CSS -->
+  <link href="assets/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <!--external css-->
+  <link href="assets/lib/font-awesome/css/font-awesome.css" rel="stylesheet" />
+  <link rel="stylesheet" type="text/css" href="assets/css/zabuto_calendar.css">
+  <link rel="stylesheet" type="text/css" href="assets/lib/gritter/css/jquery.gritter.css" />
+  <!-- Custom styles for this template -->
+  <link href="assets/css/style.css" rel="stylesheet">
+  <link href="assets/css/style-responsive.css" rel="stylesheet">
+  <script src="assets/lib/chart-master/Chart.js"></script>
 </head>
 <body>
     <section id="container">
@@ -65,18 +81,18 @@ $settings = getSiteSettings();
         
         <section id="main-content">
             <section class="wrapper">
-                <h3>Manage Warnings for <?php echo htmlspecialchars($user['display_name']); ?></h3>
+                <h3>Manage Warnings for <?php echo htmlspecialchars($user['display_name'] ?? 'Unknown'); ?></h3>
                 <form action="" method="POST">
                     <div class="form-group">
                         <label for="warning_message">Warning Message</label>
-                        <textarea name="warning_message" id="warning_message" class="form-control" rows="4" maxlength="255"><?php echo htmlspecialchars($user['warning_message']); ?></textarea>
-                        </div>
+                        <textarea name="warning_message" id="warning_message" class="form-control" rows="4" maxlength="255"><?php echo htmlspecialchars($user['warning_message'] ?? ''); ?></textarea>
+                    </div>
                     <div class="form-group">
                         <label for="warning_level">Warning Level</label>
                         <select name="warning_level" id="warning_level" class="form-control">
-                            <option value="low" <?php echo $user['warning_level'] == 'low' ? 'selected' : ''; ?>>Low</option>
-                            <option value="medium" <?php echo $user['warning_level'] == 'medium' ? 'selected' : ''; ?>>Medium</option>
-                            <option value="high" <?php echo $user['warning_level'] == 'high' ? 'selected' : ''; ?>>High</option>
+                            <option value="low" <?php echo ($user['warning_level'] ?? '') == 'low' ? 'selected' : ''; ?>>Low</option>
+                            <option value="medium" <?php echo ($user['warning_level'] ?? '') == 'medium' ? 'selected' : ''; ?>>Medium</option>
+                            <option value="high" <?php echo ($user['warning_level'] ?? '') == 'high' ? 'selected' : ''; ?>>High</option>
                         </select>
                     </div>
                     <button type="submit" class="btn btn-primary">Save Changes</button>
@@ -84,8 +100,31 @@ $settings = getSiteSettings();
             </section>
         </section>
     </section>
+<!-- Footer -->
+<footer class="site-footer">
+      <div class="text-center">
+        <p>&copy; Copyrights <strong><?php echo htmlspecialchars($settings['site_title']); ?></strong>. All Rights Reserved</p>
+        <a href="index.html#" class="go-top">
+          <i class="fa fa-angle-up"></i>
+        </a>
+      </div>
+    </footer>
+  </section>
 
-    <script src="assets/lib/jquery/jquery.min.js"></script>
+  <!-- JS scripts placed at the end of the document so the pages load faster -->
+  <script src="assets/lib/jquery/jquery.min.js"></script>
+  <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
+  <script class="include" type="text/javascript" src="assets/lib/jquery.dcjqaccordion.2.7.js"></script>
+  <script src="assets/lib/jquery.scrollTo.min.js"></script>
+  <script src="assets/lib/jquery.nicescroll.js" type="text/javascript"></script>
+  <script src="assets/lib/jquery.sparkline.js"></script>
+  <!--common script for all pages-->
+  <script src="assets/lib/common-scripts.js"></script>
+  <script type="text/javascript" src="assets/lib/gritter/js/jquery.gritter.js"></script>
+  <script type="text/javascript" src="assets/lib/gritter-conf.js"></script>
+  <!--script for this page-->
+  <script src="assets/lib/sparkline-chart.js"></script>
+  <script src="assets/lib/zabuto_calendar.js"></script>
     <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
 </body>
 </html>

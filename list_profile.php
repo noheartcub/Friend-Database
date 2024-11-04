@@ -122,22 +122,52 @@ $people = $peopleStmt->fetchAll(PDO::FETCH_ASSOC);
     <?php endif; ?>
         <td><?php echo htmlspecialchars($person['category']); ?></td>
     <?php if (hasRole('admin') || !$person['hide_age']): ?>
-        <td><?php echo htmlspecialchars($person['age']); ?></td>
+        <td>    <?php echo calculateAge($person['birthday']); ?>        </td>
     <?php else: ?>
         <td>Hidden</td>
     <?php endif; ?>
 
-    <td><?php echo htmlspecialchars($person['is_mute'] ? 'Mute' : 'Not Mute'); ?></td>
-    <td><?php echo htmlspecialchars($person['is_deaf'] ? 'Deaf' : 'Not Deaf'); ?></td>
+    <td style="text-align: center;">
+    <?php if ($person['is_mute']): ?>
+        <i class="fa fa-microphone-slash" title="Mute" style="color: red; font-size: 2em; vertical-align: middle;"></i>
+    <?php else: ?>
+        <i class="fa fa-microphone" title="Not Mute" style="color: green; font-size: 2em; vertical-align: middle;"></i>
+    <?php endif; ?>
+</td>
+<td style="text-align: center;">
+    <?php if ($person['is_deaf']): ?>
+        <i class="fa fa-deaf" title="Deaf" style="color: red; font-size: 2em; vertical-align: middle;"></i>
+    <?php else: ?>
+        <i class="fa fa-volume-up" title="Not Deaf" style="color: green; font-size: 2em; vertical-align: middle;"></i>
+    <?php endif; ?>
+</td>
+
+
+
 
     <?php if (hasRole('admin') || !$person['hide_birthday']): ?>
       <td><?php echo htmlspecialchars($person['birthday'] ?? 'Not Entered'); ?></td>
       <?php else: ?>
         <td>Hidden</td>
     <?php endif; ?>   
-    <td>
-            <a href="profile.php?id=<?php echo htmlspecialchars($person['id']); ?>" class="btn btn-info">View This Profile</a>        
-        </td>                            
+    <td style="text-align: center;">
+    <!-- View Profile Icon -->
+    <a href="profile.php?id=<?php echo $person['id']; ?>" title="View Profile" style="margin-right: 10px;">
+        <i class="fa fa-eye" style="color: blue; font-size: 1.5em;"></i>
+    </a>
+
+    <!-- Edit Profile Icon -->
+    <a href="edit_profile.php?id=<?php echo $person['id']; ?>" title="Edit Profile" style="margin-right: 10px;">
+        <i class="fa fa-pencil" style="color: orange; font-size: 1.5em;"></i>
+    </a>
+
+    <!-- Delete Profile Icon -->
+    <a href="delete_profile.php?id=<?php echo $person['id']; ?>" title="Delete Profile" onclick="return confirm('Are you sure you want to delete this profile?');">
+        <i class="fa fa-trash" style="color: red; font-size: 1.5em;"></i>
+    </a>
+</td>
+
+                           
     </tr>
     <?php endforeach; ?>
 </tbody>
