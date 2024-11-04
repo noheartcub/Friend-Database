@@ -138,13 +138,13 @@ if (isset($_SESSION['role']) && ($_SESSION['role'] === 'admin' || $_SESSION['rol
     // Display warning if it exists
     if (!empty($user['warning_message'])) {
         $warningLevel = $user['warning_level'] ?? 'low'; // default to low if not set
-        $warningMessage = htmlspecialchars($user['warning_message']);
+        $warningMessage = nl2br(htmlspecialchars($user['warning_message'])); // Preserve line breaks in the warning message
         
         // Define styling based on warning level
-        $alertClass = '';
-        $warningLabel = '';
-        $iconClass = '';
-        
+        $alertClass = 'alert-info';
+        $warningLabel = 'Low Warning';
+        $iconClass = 'fa fa-shield-alt'; // Low warning icon by default
+
         switch ($warningLevel) {
             case 'high':
                 $alertClass = 'alert-danger';
@@ -156,22 +156,17 @@ if (isset($_SESSION['role']) && ($_SESSION['role'] === 'admin' || $_SESSION['rol
                 $warningLabel = 'Medium Warning';
                 $iconClass = 'fa fa-radiation'; // Medium warning icon
                 break;
-            case 'low':
-            default:
-                $alertClass = 'alert-info';
-                $warningLabel = 'Low Warning';
-                $iconClass = 'fa fa-shield-alt'; // Low warning icon
-                break;
         }
         
         // Display the alert
         echo "<div class='alert {$alertClass} text-center' role='alert' style='font-size: 1.5em;'>
-                <i class='{$iconClass}' style='font-size: 2em;'></i>
-                <strong>{$warningLabel}<br><br></strong> {$warningMessage}
+                <i class='{$iconClass}' style='font-size: 2em; margin-right: 10px;'></i>
+                <strong>{$warningLabel}</strong><br><br> {$warningMessage}
               </div>";
     }
 }
 ?>
+
 
                         <div class="panel-body">
                             <!-- Tabs for Information, Contact Information, Social Media, Events, Gallery, and Edit Profile -->
