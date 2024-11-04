@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:3306
--- Generation Time: Nov 01, 2024 at 04:43 PM
--- Server version: 10.11.9-MariaDB
--- PHP Version: 8.3.11
+-- Värd: 127.0.0.1:3306
+-- Tid vid skapande: 04 nov 2024 kl 19:46
+-- Serverversion: 8.3.0
+-- PHP-version: 8.2.18
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,77 +18,106 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `devtest_friend_system`
+-- Databas: `friend_manager_v2`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `activity_logs`
+-- Tabellstruktur `activity_logs`
 --
 
-CREATE TABLE `activity_logs` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `activity_logs`;
+CREATE TABLE IF NOT EXISTS `activity_logs` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
   `action` varchar(255) NOT NULL,
-  `timestamp` timestamp NULL DEFAULT current_timestamp(),
-  `details` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+  `timestamp` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `details` text,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `avatars`
+-- Tabellstruktur `avatars`
 --
 
-CREATE TABLE `avatars` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `avatars`;
+CREATE TABLE IF NOT EXISTS `avatars` (
+  `id` int NOT NULL AUTO_INCREMENT,
   `avatarid` varchar(100) NOT NULL,
   `avatarimage` varchar(255) NOT NULL,
   `avatar_name` varchar(255) NOT NULL,
   `creator` varchar(100) NOT NULL,
   `base_model` varchar(100) NOT NULL,
-  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `uploaded_by` varchar(255) NOT NULL,
-  `features` varchar(9999) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+  `features` varchar(9999) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `avatarid` (`avatarid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `images`
+-- Tabellstruktur `images`
 --
 
-CREATE TABLE `images` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `images`;
+CREATE TABLE IF NOT EXISTS `images` (
+  `id` int NOT NULL AUTO_INCREMENT,
   `image_name` varchar(255) NOT NULL,
   `file_path` varchar(255) NOT NULL,
-  `uploaded_at` timestamp NULL DEFAULT current_timestamp(),
-  `uploader_id` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+  `uploaded_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `uploader_id` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `password_resets`
+-- Tabellstruktur `notifications`
 --
 
-CREATE TABLE `password_resets` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `notifications`;
+CREATE TABLE IF NOT EXISTS `notifications` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `message` text NOT NULL,
+  `type` enum('info','warning','update') DEFAULT 'info',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `is_read` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellstruktur `password_resets`
+--
+
+DROP TABLE IF EXISTS `password_resets`;
+CREATE TABLE IF NOT EXISTS `password_resets` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
   `token` varchar(255) NOT NULL,
-  `expires_at` datetime NOT NULL DEFAULT (current_timestamp() + interval 30 minute),
-  `created_at` datetime DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+  `expires_at` datetime NOT NULL DEFAULT ((now() + interval 30 minute)),
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `token` (`token`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `people`
+-- Tabellstruktur `people`
 --
 
-CREATE TABLE `people` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `people`;
+CREATE TABLE IF NOT EXISTS `people` (
+  `id` int NOT NULL AUTO_INCREMENT,
   `display_name` varchar(100) NOT NULL,
   `profile_image` varchar(255) NOT NULL,
   `first_name` varchar(50) DEFAULT NULL,
@@ -98,72 +127,83 @@ CREATE TABLE `people` (
   `phone_number` varchar(20) DEFAULT NULL,
   `discord` varchar(100) DEFAULT NULL,
   `steam` varchar(100) DEFAULT NULL,
-  `vrchat` varchar(255) NOT NULL,
+  `youtube` varchar(100) NOT NULL,
+  `vrchat` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
   `twitter` varchar(100) DEFAULT NULL,
   `twitch` varchar(100) DEFAULT NULL,
   `birthday` date DEFAULT NULL,
   `timezone` varchar(50) DEFAULT NULL,
-  `is_mute` tinyint(1) DEFAULT 0,
-  `is_deaf` tinyint(1) DEFAULT 0,
-  `meeting_places` varchar(100) DEFAULT NULL,  
-  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `is_mute` tinyint(1) DEFAULT '0',
+  `is_deaf` tinyint(1) DEFAULT '0',
+  `meeting_places` varchar(100) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `category` enum('Friend','Family','Best Friend','Ex-Colleagues','Girlfriend','Boyfriend','Ex Girlfriend','Ex Boyfriend','Pet','Master','BDSM Pet','D.I.D Core','D.I.D Alter','D.I.D Protector','D.I.D Caregiver','D.I.D Gatekeeper','D.I.D Introject','D.I.D Helper') DEFAULT 'Friend',
-  `hide_age` tinyint(4) DEFAULT 0,
-  `hide_discord` tinyint(1) DEFAULT 0,
-  `hide_email` tinyint(1) DEFAULT 0,
-  `hide_steam_id` tinyint(1) DEFAULT 0,
-  `hide_birthday` tinyint(1) DEFAULT 0,
-  `hide_vrchat_id` tinyint(1) DEFAULT 0,
-  `hide_first_name` tinyint(4) DEFAULT 0,
-  `hide_last_name` tinyint(4) DEFAULT 0,
-  `hide_phone_number` tinyint(4) DEFAULT 0,
-  `hide_address` tinyint(1) NOT NULL DEFAULT 0,
+  `hide_age` tinyint DEFAULT '0',
+  `hide_discord` tinyint(1) DEFAULT '0',
+  `hide_email` tinyint(1) DEFAULT '0',
+  `hide_steam_id` tinyint(1) DEFAULT '0',
+  `hide_birthday` tinyint(1) DEFAULT '0',
+  `hide_vrchat_id` tinyint(1) DEFAULT '0',
+  `hide_first_name` tinyint DEFAULT '0',
+  `hide_last_name` tinyint DEFAULT '0',
+  `hide_phone_number` tinyint DEFAULT '0',
+  `hide_address` tinyint(1) NOT NULL DEFAULT '0',
   `warning_message` varchar(255) DEFAULT NULL,
-  `warning_level` enum('low','medium','high') DEFAULT 'low'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+  `warning_level` enum('low','medium','high') DEFAULT 'low',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `people_events`
+-- Tabellstruktur `people_events`
 --
 
-CREATE TABLE `people_events` (
-  `id` int(11) NOT NULL,
-  `person_id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `people_events`;
+CREATE TABLE IF NOT EXISTS `people_events` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `person_id` int NOT NULL,
   `event_type` enum('meeting','call','conflict','gaming_session','movie_night','note') DEFAULT 'note',
   `event_date` date DEFAULT NULL,
-  `description` text DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+  `description` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `person_id` (`person_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `people_gallery`
+-- Tabellstruktur `people_gallery`
 --
 
-CREATE TABLE `people_gallery` (
-  `id` int(11) NOT NULL,
-  `person_id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `people_gallery`;
+CREATE TABLE IF NOT EXISTS `people_gallery` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `person_id` int NOT NULL,
   `image_name` varchar(255) NOT NULL,
-  `created_at` timestamp NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `person_id` (`person_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `permissions`
+-- Tabellstruktur `permissions`
 --
 
-CREATE TABLE `permissions` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `permissions`;
+CREATE TABLE IF NOT EXISTS `permissions` (
+  `id` int NOT NULL AUTO_INCREMENT,
   `permission_name` varchar(50) NOT NULL,
-  `description` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+  `description` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `permission_name` (`permission_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `permissions`
+-- Dumpning av Data i tabell `permissions`
 --
 
 INSERT INTO `permissions` (`id`, `permission_name`, `description`) VALUES
@@ -182,16 +222,19 @@ INSERT INTO `permissions` (`id`, `permission_name`, `description`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `roles`
+-- Tabellstruktur `roles`
 --
 
-CREATE TABLE `roles` (
-  `id` int(11) NOT NULL,
-  `role_name` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+DROP TABLE IF EXISTS `roles`;
+CREATE TABLE IF NOT EXISTS `roles` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `role_name` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `role_name` (`role_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `roles`
+-- Dumpning av Data i tabell `roles`
 --
 
 INSERT INTO `roles` (`id`, `role_name`) VALUES
@@ -202,52 +245,109 @@ INSERT INTO `roles` (`id`, `role_name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `role_permissions`
+-- Tabellstruktur `role_permissions`
 --
 
-CREATE TABLE `role_permissions` (
-  `role_id` int(11) NOT NULL,
-  `permission_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+DROP TABLE IF EXISTS `role_permissions`;
+CREATE TABLE IF NOT EXISTS `role_permissions` (
+  `role_id` int NOT NULL,
+  `permission_id` int NOT NULL,
+  PRIMARY KEY (`role_id`,`permission_id`),
+  KEY `permission_id` (`permission_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `settings`
+-- Tabellstruktur `settings`
 --
 
-CREATE TABLE `settings` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `settings`;
+CREATE TABLE IF NOT EXISTS `settings` (
+  `id` int NOT NULL AUTO_INCREMENT,
   `setting_key` varchar(50) NOT NULL,
-  `setting_value` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+  `setting_value` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `setting_key` (`setting_key`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `settings`
+-- Dumpning av Data i tabell `settings`
 --
 
 INSERT INTO `settings` (`id`, `setting_key`, `setting_value`) VALUES
+(0, 'current_version', '2.0.0'),
 (1, 'site_url', 'https://devtest.lumavex.com'),
-(2, 'site_title', 'Friend System'),
+(2, 'site_title', 'Friend Manager v2'),
 (3, 'site_description', 'A description of the site'),
-(4, 'support_email', 'support@yourwebsite.com'),
-(5, 'smtp_host', 'smtp.yourhost.com'),
+(4, 'support_email', 'support@lumavex.com'),
+(5, 'smtp_host', 'smtp.sendgrid.net'),
 (6, 'smtp_port', '587'),
-(7, 'smtp_user', 'your-email@yourhost.com'),
+(7, 'smtp_user', 'apikey'),
 (8, 'smtp_pass', 'your-password'),
-(9, 'smtp_encryption', 'None');
-
-INSERT INTO settings (setting_key, setting_value) VALUES ('current_version', '2.0.0');
-
+(9, 'smtp_encryption', 'TLS'),
+(12, 'time_format', '12-hour'),
+(13, 'smtp_provider', 'sendgrid');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Tabellstruktur `tasks`
 --
 
-CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `tasks`;
+CREATE TABLE IF NOT EXISTS `tasks` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `project_id` int NOT NULL,
+  `task_name` varchar(255) NOT NULL,
+  `description` text,
+  `priority` enum('High','Medium','Low') DEFAULT 'Medium',
+  `image_path` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `project_id` (`project_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellstruktur `task_categories`
+--
+
+DROP TABLE IF EXISTS `task_categories`;
+CREATE TABLE IF NOT EXISTS `task_categories` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `project_id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `project_id` (`project_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellstruktur `task_projects`
+--
+
+DROP TABLE IF EXISTS `task_projects`;
+CREATE TABLE IF NOT EXISTS `task_projects` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellstruktur `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int NOT NULL AUTO_INCREMENT,
   `username` varchar(50) NOT NULL,
   `first_name` varchar(50) NOT NULL,
   `last_name` varchar(50) NOT NULL,
@@ -255,233 +355,32 @@ CREATE TABLE `users` (
   `password` varchar(255) NOT NULL,
   `email` varchar(100) NOT NULL,
   `role` varchar(20) DEFAULT 'user',
-  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `last_login` timestamp NULL DEFAULT NULL,
-  `banned` tinyint(1) DEFAULT 0,
-  `ban_reason` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+  `banned` tinyint(1) DEFAULT '0',
+  `ban_reason` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_sessions`
+-- Tabellstruktur `user_sessions`
 --
 
-CREATE TABLE `user_sessions` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `user_sessions`;
+CREATE TABLE IF NOT EXISTS `user_sessions` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
   `session_token` varchar(64) NOT NULL,
-  `created_at` timestamp NULL DEFAULT current_timestamp(),
-  `expires_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
-
-CREATE TABLE notifications (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    message TEXT NOT NULL,
-    type ENUM('info', 'warning', 'update') DEFAULT 'info',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    is_read TINYINT(1) DEFAULT 0
-);
-
-
-CREATE TABLE task_projects (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    description TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-CREATE TABLE tasks (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    project_id INT,
-    category_id INT DEFAULT NULL,
-    task_name VARCHAR(255) NOT NULL,
-    description TEXT,
-    priority ENUM('High', 'Medium', 'Low') DEFAULT 'Medium',
-    due_date DATE DEFAULT NULL,
-    image_path VARCHAR(255) DEFAULT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (project_id) REFERENCES task_projects(id) ON DELETE CASCADE
-);
-CREATE TABLE task_categories (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    project_id INT,
-    FOREIGN KEY (project_id) REFERENCES task_projects(id) ON DELETE CASCADE
-);
-
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `activity_logs`
---
-ALTER TABLE `activity_logs`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`);
-
---
--- Indexes for table `avatars`
---
-ALTER TABLE `avatars`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `avatarid` (`avatarid`);
-
---
--- Indexes for table `images`
---
-ALTER TABLE `images`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `password_resets`
---
-ALTER TABLE `password_resets`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `token` (`token`),
-  ADD KEY `user_id` (`user_id`);
-
---
--- Indexes for table `people`
---
-ALTER TABLE `people`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `people_events`
---
-ALTER TABLE `people_events`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `person_id` (`person_id`);
-
---
--- Indexes for table `people_gallery`
---
-ALTER TABLE `people_gallery`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `person_id` (`person_id`);
-
---
--- Indexes for table `permissions`
---
-ALTER TABLE `permissions`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `permission_name` (`permission_name`);
-
---
--- Indexes for table `roles`
---
-ALTER TABLE `roles`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `role_name` (`role_name`);
-
---
--- Indexes for table `role_permissions`
---
-ALTER TABLE `role_permissions`
-  ADD PRIMARY KEY (`role_id`,`permission_id`),
-  ADD KEY `permission_id` (`permission_id`);
-
---
--- Indexes for table `settings`
---
-ALTER TABLE `settings`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `setting_key` (`setting_key`);
-
---
--- Indexes for table `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `username` (`username`),
-  ADD UNIQUE KEY `email` (`email`);
-
---
--- Indexes for table `user_sessions`
---
-ALTER TABLE `user_sessions`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `session_token` (`session_token`),
-  ADD KEY `user_id` (`user_id`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `activity_logs`
---
-ALTER TABLE `activity_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `avatars`
---
-ALTER TABLE `avatars`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `images`
---
-ALTER TABLE `images`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `password_resets`
---
-ALTER TABLE `password_resets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `people`
---
-ALTER TABLE `people`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `people_events`
---
-ALTER TABLE `people_events`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `people_gallery`
---
-ALTER TABLE `people_gallery`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `permissions`
---
-ALTER TABLE `permissions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
-
---
--- AUTO_INCREMENT for table `roles`
---
-ALTER TABLE `roles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT for table `settings`
---
-ALTER TABLE `settings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
-
---
--- AUTO_INCREMENT for table `users`
---
-ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `user_sessions`
---
-ALTER TABLE `user_sessions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `expires_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `session_token` (`session_token`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

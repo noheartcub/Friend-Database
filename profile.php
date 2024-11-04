@@ -110,6 +110,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
   <link href="assets/css/style.css" rel="stylesheet">
   <script src="assets/lib/jquery/jquery.min.js"></script>
   <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 </head>
 
 <body>
@@ -130,6 +132,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
                             <h3><?php echo htmlspecialchars($user['category']); ?></h3>
                             <p><strong>Time:</strong> <span id="userTime"></span></p>
                         </div>
+                        <?php
+// Check for warnings if the user has admin or moderator privileges
+if (isset($_SESSION['role']) && ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'moderator')) {
+    // Display warning if it exists
+    if (!empty($user['warning_message'])) {
+        $warningLevel = $user['warning_level'] ?? 'low'; // default to low if not set
+        $warningMessage = htmlspecialchars($user['warning_message']);
+        
+        // Define styling based on warning level
+        $alertClass = '';
+        $warningLabel = '';
+        $iconClass = '';
+        
+        switch ($warningLevel) {
+            case 'high':
+                $alertClass = 'alert-danger';
+                $warningLabel = 'High Warning';
+                $iconClass = 'fa fa-skull-crossbones'; // High warning icon
+                break;
+            case 'medium':
+                $alertClass = 'alert-warning';
+                $warningLabel = 'Medium Warning';
+                $iconClass = 'fa fa-radiation'; // Medium warning icon
+                break;
+            case 'low':
+            default:
+                $alertClass = 'alert-info';
+                $warningLabel = 'Low Warning';
+                $iconClass = 'fa fa-shield-alt'; // Low warning icon
+                break;
+        }
+        
+        // Display the alert
+        echo "<div class='alert {$alertClass} text-center' role='alert' style='font-size: 1.5em;'>
+                <i class='{$iconClass}' style='font-size: 2em;'></i>
+                <strong>{$warningLabel}<br><br></strong> {$warningMessage}
+              </div>";
+    }
+}
+?>
 
                         <div class="panel-body">
                             <!-- Tabs for Information, Contact Information, Social Media, Events, Gallery, and Edit Profile -->
@@ -182,7 +224,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
                                         <a href="https://www.youtube.com/channel/<?php echo htmlspecialchars($user['youtube']); ?>" target="_blank"><i class="fa fa-youtube-play fa-2x"></i></a>
                                     <?php endif; ?>
                                     <?php if (!empty($user['vrchat'])): ?>
-                                        <a href="https://www.youtube.com/channel/<?php echo htmlspecialchars($user['vrchat']); ?>" target="_blank"><i class="fa fa-gamepad fa-2x"></i></a>
+                                        <a href="https://vrchat.com/home/user/<?php echo htmlspecialchars($user['vrchat']); ?>" target="_blank"><i class="fa fa-gamepad fa-2x"></i></a>
                                     <?php endif; ?>                                    
                                 </div>
 
@@ -242,34 +284,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
   <!--script for this page-->
   <script src="assets/lib/sparkline-chart.js"></script>
   <script src="assets/lib/zabuto_calendar.js"></script>
-
-<script>
+  <script>
 document.addEventListener("DOMContentLoaded", function() {
     const userTimeElement = document.getElementById('userTime');
-    const timeZone = '<?php echo $user['timezone'] ?? 'UTC'; ?>';
-    const is24Hour = '<?php echo ($settings['time_format'] ?? '24-hour') === '24-hour' ? true : false; ?>';
-
-    function updateUserTime() {
-        const now = new Date().toLocaleString("en-US", { timeZone });
-        const date = new Date(now);
-
-        let hours = date.getHours();
-        const minutes = date.getMinutes().toString().padStart(2, '0');
-
-        if (!is24Hour) {
-            const ampm = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12 || 12; // Convert to 12-hour format
-            userTimeElement.textContent = `${hours}:${minutes} ${ampm}`;
-        } else {
-            // Display in 24-hour format
-            userTimeElement.textContent = `${hours.toString().padStart(2, '0')}:${minutes}`;
-        }
+    if (!userTimeElement) {
+        console.error("userTime element not found");
+        return;
     }
 
-    // Initial call and set interval to update every minute
+    // Retrieve timezone and time format from PHP
+    const timeZone = '<?php echo $user['timezone'] ?? 'UTC'; ?>';
+    const timeFormat = '<?php echo $settings['time_format'] ?? '24-hours'; ?>';
+
+    function updateUserTime() {
+        const now = new Date().toLocaleTimeString("en-US", {
+            timeZone: timeZone,
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: timeFormat === '12-hours' // Explicitly set hour12 based on 12-hours or 24-hours
+        });
+
+        userTimeElement.textContent = now;
+
+        // Call updateUserTime again after 1 minute
+        setTimeout(updateUserTime, 60000);
+    }
+
+    // Initial call to display the time immediately
     updateUserTime();
-    setInterval(updateUserTime, 60000); // Update every minute
 });
+</script>
+
+
+
+
 </script>
 
 </body>
