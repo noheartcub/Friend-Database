@@ -224,7 +224,7 @@ if (isset($_SESSION['role']) && ($_SESSION['role'] === 'admin' || $_SESSION['rol
                                         <a href="https://www.youtube.com/channel/<?php echo htmlspecialchars($user['youtube']); ?>" target="_blank"><i class="fa fa-youtube-play fa-2x"></i></a>
                                     <?php endif; ?>
                                     <?php if (!empty($user['vrchat'])): ?>
-                                        <a href="https://www.youtube.com/channel/<?php echo htmlspecialchars($user['vrchat']); ?>" target="_blank"><i class="fa fa-gamepad fa-2x"></i></a>
+                                        <a href="https://vrchat.com/home/user/<?php echo htmlspecialchars($user['vrchat']); ?>" target="_blank"><i class="fa fa-gamepad fa-2x"></i></a>
                                     <?php endif; ?>                                    
                                 </div>
 

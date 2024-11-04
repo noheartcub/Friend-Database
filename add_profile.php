@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $phoneNumber = $_POST['phone_number'];
     $discord = $_POST['discord'];
     $steam = $_POST['steam'];
-    $vrchat = $_POST['vrchat'];
+    $vrchat = !empty($_POST['vrchat']) ? $_POST['vrchat'] : null;
     $twitter = $_POST['twitter'];
     $twitch = $_POST['twitch'];
     $birthday = !empty($_POST['birthday']) ? $_POST['birthday'] : null;
@@ -185,9 +185,9 @@ $settings = getSiteSettings();
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="control-label col-md-3">VRChat ID <span style="color:red;">*</span></label>
+                  <label class="control-label col-md-3">VRChat ID</label>
                   <div class="col-md-4">
-                    <input type="text" name="vrchat" class="form-control" required>
+                    <input type="text" name="vrchat" class="form-control">
                   </div>
                 </div>
                 <div class="form-group">
