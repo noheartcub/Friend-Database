@@ -14,7 +14,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $profileImage = $_FILES['profile_image']['name'];
     $firstName = $_POST['first_name'];
     $lastName = $_POST['last_name'];
-    $age = $_POST['age'];
     $address = $_POST['address'];
     $meetingPlaces = $_POST['meeting_places'];
     $email = $_POST['email'];
@@ -54,10 +53,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Insert the new person into the database
     $stmt = $pdo->prepare("INSERT INTO people 
-        (display_name, profile_image, first_name, last_name, address, meeting_places, email, phone_number, discord, steam, vrchat, twitter, twitch, age, birthday, timezone, is_mute, is_deaf, category, 
+        (display_name, profile_image, first_name, last_name, address, meeting_places, email, phone_number, discord, steam, vrchat, twitter, twitch,  birthday, timezone, is_mute, is_deaf, category, 
         hide_age, hide_discord, hide_email, hide_steam_id, hide_birthday, hide_vrchat_id, hide_first_name, hide_last_name, hide_phone_number, hide_address) 
         VALUES 
-        (:display_name, :profile_image, :first_name, :last_name, :address, :meeting_places, :email, :phone_number, :discord, :steam, :vrchat, :twitter, :twitch, :age, :birthday, :timezone, :is_mute, :is_deaf, :category, 
+        (:display_name, :profile_image, :first_name, :last_name, :address, :meeting_places, :email, :phone_number, :discord, :steam, :vrchat, :twitter, :twitch, :birthday, :timezone, :is_mute, :is_deaf, :category, 
         :hide_age, :hide_discord, :hide_email, :hide_steam_id, :hide_birthday, :hide_vrchat_id, :hide_first_name, :hide_last_name, :hide_phone_number, :hide_address)");
 
     $stmt->bindParam(':display_name', $displayName);
@@ -73,7 +72,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bindParam(':vrchat', $vrchat);
     $stmt->bindParam(':twitter', $twitter);
     $stmt->bindParam(':twitch', $twitch);
-    $stmt->bindParam(':age', $age);
     $stmt->bindParam(':birthday', $birthday);
     $stmt->bindParam(':timezone', $timezone); // Binding timezone
     $stmt->bindParam(':is_mute', $isMute);
@@ -192,6 +190,18 @@ $settings = getSiteSettings();
                     <input type="text" name="vrchat" class="form-control" required>
                   </div>
                 </div>
+                <div class="form-group">
+                  <label class="control-label col-md-3">Twitter</label>
+                  <div class="col-md-4">
+                    <input type="text" name="twitter" class="form-control">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-md-3">Twitch</label>
+                  <div class="col-md-4">
+                    <input type="text" name="twitch" class="form-control">
+                  </div>
+                </div>                
                 <div class="form-group">
                   <label class="control-label col-md-3">Birthday</label>
                   <div class="col-md-4">
