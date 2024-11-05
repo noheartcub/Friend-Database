@@ -15,16 +15,39 @@ $tempZipPath = __DIR__ . "/update.zip";
 $extractPath = __DIR__ . "/update";
 $configPath = __DIR__ . "/includes/config.php";
 $uploadsPath = __DIR__ . "/uploads";
-$setupPath = __DIR__ . "/setup.php";
 
 consoleLog("Starting update process...");
 
-// Step 1: Download the Beta branch ZIP file
+// Step 1: Download the Beta branch ZIP file with error check
 consoleLog("Downloading update from GitHub's Beta branch...");
-if (file_put_contents($tempZipPath, fopen($repoUrl, 'r'))) {
+$context = stream_context_create(['http' => ['ignore_errors' => true]]);
+$response = @file_get_contents($repoUrl, false, $context);
+
+if ($response === FALSE) {
+    consoleLog("Error: Failed to access the update URL. Please check your internet connection or the GitHub repository URL.");
+    exit;
+}
+
+// Check for HTTP response code, especially 404 errors
+$httpCode = null;
+if (isset($http_response_header)) {
+    foreach ($http_response_header as $header) {
+        if (stripos($header, 'HTTP/') === 0) {
+            $httpCode = (int) substr($header, 9, 3);
+            break;
+        }
+    }
+}
+
+if ($httpCode === 404) {
+    consoleLog("Error: GitHub repository or file not found (404). Please ensure the repository URL is correct.");
+    exit;
+}
+
+if (file_put_contents($tempZipPath, $response)) {
     consoleLog("Download completed: $tempZipPath");
 } else {
-    consoleLog("Error: Failed to download update.");
+    consoleLog("Error: Failed to save downloaded update.");
     exit;
 }
 
@@ -57,9 +80,9 @@ $iterator = new RecursiveIteratorIterator($directory, RecursiveIteratorIterator:
 foreach ($iterator as $file) {
     $destPath = __DIR__ . DIRECTORY_SEPARATOR . $iterator->getSubPathName();
 
-    // Skip specific files
-    if (realpath($destPath) === realpath($configPath) || realpath($destPath) === realpath($setupPath)) {
-        consoleLog("Skipping protected file: {$iterator->getSubPathName()}");
+    // Skip config.php and setup.php to prevent overwriting settings or setup files
+    if (realpath($destPath) === realpath($configPath) || basename($file) === 'setup.php') {
+        consoleLog("Skipping " . basename($file) . " to preserve settings or setup configuration.");
         continue;
     }
 
@@ -79,11 +102,25 @@ foreach ($iterator as $file) {
 
 consoleLog("File copy completed.");
 
-// Step 4: Cleanup the downloaded ZIP and extracted files
+// Cleanup Section with Explicit Checks
+
 consoleLog("Starting cleanup of temporary files...");
 
-// Updated function to delete directory contents, including hidden files
-function deleteDirectory($dir, $protectedDir) {
+// Function to delete a file with logging and confirmation
+function deleteFileWithConfirmation($filePath) {
+    if (file_exists($filePath)) {
+        if (unlink($filePath)) {
+            consoleLog("Deleted file: $filePath");
+        } else {
+            consoleLog("Failed to delete file: $filePath");
+        }
+    } else {
+        consoleLog("File does not exist: $filePath");
+    }
+}
+
+// Function to delete directories except protected ones (like uploads)
+function deleteDirectory($dir, $protectedDir = null) {
     $files = new RecursiveIteratorIterator(
         new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS),
         RecursiveIteratorIterator::CHILD_FIRST
@@ -92,32 +129,92 @@ function deleteDirectory($dir, $protectedDir) {
     foreach ($files as $fileInfo) {
         $filePath = $fileInfo->getRealPath();
 
-        // Skip deletion if the file is within the `uploads` or `setup.php` path
-        if (strpos($filePath, realpath($protectedDir)) === 0 || basename($filePath) === 'setup.php') {
+        // Skip deletion if the file is within the protected directory
+        if ($protectedDir && strpos($filePath, realpath($protectedDir)) === 0) {
             consoleLog("Skipping protected file or directory: $filePath");
             continue;
         }
 
-        // Delete files and directories, including hidden ones
-        $action = $fileInfo->isDir() ? 'rmdir' : 'unlink';
-        
-        if ($action($filePath)) {
-            consoleLog("Deleted " . ($fileInfo->isDir() ? "directory" : "file") . ": $filePath");
+        // Skip deletion of setup.php if found
+        if (basename($filePath) === 'setup.php') {
+            consoleLog("Skipping deletion of setup.php: $filePath");
+            continue;
+        }
+
+        // Perform deletion and confirm
+        if ($fileInfo->isDir()) {
+            if (rmdir($filePath)) {
+                consoleLog("Deleted directory: $filePath");
+            } else {
+                consoleLog("Failed to delete directory: $filePath");
+            }
         } else {
-            consoleLog("Failed to delete " . ($fileInfo->isDir() ? "directory" : "file") . ": $filePath");
+            deleteFileWithConfirmation($filePath);
         }
     }
 
-    // Try to delete the main directory if it's not the protected one
-    if (realpath($dir) !== realpath($protectedDir) && @rmdir($dir)) {
-        consoleLog("Deleted directory: $dir");
-    } elseif (realpath($dir) === realpath($protectedDir)) {
-        consoleLog("Skipping deletion of protected uploads directory.");
+    // Delete the main directory if it's not protected
+    if (!$protectedDir || realpath($dir) !== realpath($protectedDir)) {
+        if (rmdir($dir)) {
+            consoleLog("Deleted main directory: $dir");
+        } else {
+            consoleLog("Failed to delete main directory: $dir");
+        }
     }
 }
 
-unlink($tempZipPath);
+// Call delete function for temp files and directories
+deleteFileWithConfirmation($tempZipPath);
 deleteDirectory($extractPath, $uploadsPath);
+deleteFileWithConfirmation(__DIR__ . '/console_log.txt');
+deleteFileWithConfirmation(__DIR__ . '/database.sql');
+
 consoleLog("Cleanup completed.");
 consoleLog("Update completed successfully.");
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update</title>
+    <style>
+        body { font-family: monospace; background-color: #1e1e1e; color: #0f0; }
+        #console { max-width: 800px; margin: 20px auto; padding: 10px; border: 1px solid #333; background-color: #000; height: 400px; overflow-y: scroll; white-space: pre-wrap; }
+        #go-to-website { display: none; text-align: center; margin-top: 20px; }
+        button { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #45a049; }
+    </style>
+</head>
+<body>
+    <div id="console">Initializing update...</div>
+
+    <!-- Button to go to website after update completes -->
+    <div id="go-to-website">
+        <button onclick="window.location.href = 'index.php';">Go to Website</button>
+    </div>
+
+    <script>
+        const consoleDiv = document.getElementById('console');
+        const goToWebsiteButton = document.getElementById('go-to-website');
+
+        async function fetchConsoleUpdates() {
+            try {
+                const response = await fetch('console_log.txt');
+                const data = await response.text();
+                consoleDiv.innerHTML = data;
+                consoleDiv.scrollTop = consoleDiv.scrollHeight;
+
+                // Check if the update is completed to show the button
+                if (data.includes("Update completed successfully.")) {
+                    clearInterval(updateInterval); // Stop refreshing console once update completes
+                    goToWebsiteButton.style.display = 'block'; // Show "Go to Website" button
+                }
+            } catch (error) {
+                consoleDiv.innerHTML += "<br>Error fetching updates: " + error;
+            }
+        }
+
+        const updateInterval = setInterval(fetchConsoleUpdates, 1000);
+    </script>
+</body>
+</html>
