@@ -10,6 +10,10 @@ if (!isLoggedIn()) {
     exit();
 }
 
+// Initialize variables to avoid undefined errors
+$events = [];
+$images = [];
+
 // Fetch user ID from the URL
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     $userId = intval($_GET['id']); // Validate the input
@@ -24,15 +28,10 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
         exit();
     }
 
-    // Fetch events and images related to the user
-    $eventsStmt = $pdo->prepare("SELECT * FROM people_events WHERE person_id = :person_id");
-    $eventsStmt->execute(['person_id' => $userId]);
-    $events = $eventsStmt->fetchAll(PDO::FETCH_ASSOC);
-
+    // Fetch images related to the user
     $imagesStmt = $pdo->prepare("SELECT * FROM people_gallery WHERE person_id = :person_id");
     $imagesStmt->execute(['person_id' => $userId]);
     $images = $imagesStmt->fetchAll(PDO::FETCH_ASSOC);
-
 } else {
     header("Location: 404.php"); // Redirect to a 404 error page for invalid ID
     exit();
@@ -41,63 +40,6 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 // Get site settings and user time
 $settings = getSiteSettings();
 $userTime = getUserTime($user['timezone'] ?? 'UTC', $settings['time_format'] ?? '24-hour');
-
-// Handle the form submission for updating user information
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
-    // Collect all form data
-    $displayName = $_POST['display_name'];
-    $firstName = $_POST['first_name'];
-    $lastName = $_POST['last_name'];
-    $email = $_POST['email'];
-    $phoneNumber = $_POST['phone_number'];
-    $discord = $_POST['discord'];
-    $steam = $_POST['steam'];
-    $vrchat = $_POST['vrchat'];
-    $twitter = $_POST['twitter'];
-    $twitch = $_POST['twitch'];
-    $youtube = $_POST['youtube'];
-    $birthday = $_POST['birthday'];
-    $timezone = $_POST['timezone'];
-    $category = $_POST['category'];
-    $isMute = $_POST['is_mute'];
-    $isDeaf = $_POST['is_deaf'];
-    $hideAge = $_POST['hide_age'];
-    $hideDiscord = $_POST['hide_discord'];
-    $hideEmail = $_POST['hide_email'];
-    $hideSteamId = $_POST['hide_steam_id'];
-    $hideBirthday = $_POST['hide_birthday'];
-    $hideVrchatId = $_POST['hide_vrchat_id'];
-    $hideFirstName = $_POST['hide_first_name'];
-    $hideLastName = $_POST['hide_last_name'];
-    $hidePhoneNumber = $_POST['hide_phone_number'];
-    $hideAddress = $_POST['hide_address'];
-
-    // Update query to save changes
-    $stmt = $pdo->prepare("UPDATE people SET 
-        display_name = :display_name, first_name = :first_name, last_name = :last_name, email = :email, 
-        phone_number = :phone_number, discord = :discord, steam = :steam, vrchat = :vrchat, 
-        twitter = :twitter, twitch = :twitch, youtube = :youtube, birthday = :birthday, 
-        timezone = :timezone, category = :category, is_mute = :is_mute, is_deaf = :is_deaf, 
-        hide_age = :hide_age, hide_discord = :hide_discord, hide_email = :hide_email, 
-        hide_steam_id = :hide_steam_id, hide_birthday = :hide_birthday, hide_vrchat_id = :hide_vrchat_id, 
-        hide_first_name = :hide_first_name, hide_last_name = :hide_last_name, 
-        hide_phone_number = :hide_phone_number, hide_address = :hide_address WHERE id = :id");
-    
-    $stmt->execute([
-        'display_name' => $displayName, 'first_name' => $firstName, 'last_name' => $lastName, 
-        'email' => $email, 'phone_number' => $phoneNumber, 'discord' => $discord, 'steam' => $steam, 
-        'vrchat' => $vrchat, 'twitter' => $twitter, 'twitch' => $twitch, 'youtube' => $youtube, 
-        'birthday' => $birthday, 'timezone' => $timezone, 'category' => $category, 'is_mute' => $isMute, 
-        'is_deaf' => $isDeaf, 'hide_age' => $hideAge, 'hide_discord' => $hideDiscord, 
-        'hide_email' => $hideEmail, 'hide_steam_id' => $hideSteamId, 'hide_birthday' => $hideBirthday, 
-        'hide_vrchat_id' => $hideVrchatId, 'hide_first_name' => $hideFirstName, 
-        'hide_last_name' => $hideLastName, 'hide_phone_number' => $hidePhoneNumber, 
-        'hide_address' => $hideAddress, 'id' => $userId
-    ]);
-
-    header("Location: profile.php?id=$userId");
-    exit();
-}
 ?>
 
 <!DOCTYPE html>
@@ -111,10 +53,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
   <script src="assets/lib/jquery/jquery.min.js"></script>
   <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
 </head>
 
 <body>
+<style>
+/* General block styling */
+.event-block {
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: #333;
+}
+.event-meeting { border-left-color: #4A90E2; background-color: #E3F2FD; }
+.event-call { border-left-color: #7E57C2; background-color: #F3E5F5; }
+.event-conflict { border-left-color: #D32F2F; background-color: #FFEBEE; }
+.event-gaming { border-left-color: #4CAF50; background-color: #E8F5E9; }
+.event-movie { border-left-color: #FFB300; background-color: #FFF3E0; }
+.event-suggestion { border-left-color: #FFD54F; background-color: #FFFDE7; }
+.event-lewding { border-left-color: #FF8A80; background-color: #FFEFEF; }
+.event-nightcall { border-left-color: #26A69A; background-color: #E0F7FA; }
+.event-block i { margin-right: 8px; font-size: 1.2em; vertical-align: middle; }
+.event-block strong { font-size: 1.1em; }
+
+/* Ensuring the filters align in a single row and have consistent padding */
+.tab-pane #events .form-control {
+    margin-bottom: 0;
+}
+
+
+.event-delete-container {
+    position: absolute;
+    bottom: 10px; /* Adjust as necessary */
+    right: 10px; /* Adjust as necessary */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+</style>
+
 <section id="container">
     <?php require 'includes/templates/header.php'; ?>
     <?php require 'includes/templates/navbar.php'; ?>
@@ -166,10 +144,7 @@ if (isset($_SESSION['role']) && ($_SESSION['role'] === 'admin' || $_SESSION['rol
     }
 }
 ?>
-
-
                         <div class="panel-body">
-                            <!-- Tabs for Information, Contact Information, Social Media, Events, Gallery, and Edit Profile -->
                             <ul class="nav nav-tabs">
                                 <li class="active"><a href="#information" data-toggle="tab">Information</a></li>
                                 <li><a href="#contact" data-toggle="tab">Contact Information</a></li>
@@ -225,14 +200,42 @@ if (isset($_SESSION['role']) && ($_SESSION['role'] === 'admin' || $_SESSION['rol
 
                                 <!-- Events Tab -->
                                 <div class="tab-pane" id="events">
-                                    <h4>Recent Events</h4>
-                                    <?php if (!empty($events)): ?>
-                                        <?php foreach ($events as $event): ?>
-                                            <p><strong><?php echo htmlspecialchars($event['event_date']); ?>:</strong> <?php echo htmlspecialchars($event['description']); ?></p>
-                                        <?php endforeach; ?>
-                                    <?php else: ?>
-                                        <p>No recent events.</p>
-                                    <?php endif; ?>
+                                    <h4>Events</h4>
+                                    <div class="row mb-3">
+                                        <!-- Event Type Dropdown -->
+                                        <div class="col-md-4">
+                                            <select id="event-type-filter" class="form-control">
+                                                <option value="">All Types</option>
+                                                <option value="meeting">Meeting</option>
+                                                <option value="call">Call</option>
+                                                <option value="conflict">Conflict</option>
+                                                <option value="gaming_session">Gaming Session</option>
+                                                <option value="movie_night">Movie Night</option>
+                                                <option value="note">Note</option>
+                                                <option value="cancel_meeting">Cancel Meeting</option>
+                                                <option value="suggestion">Suggestion</option>
+                                                <option value="lewding">Lewding</option>
+                                                <option value="nightcall">Night Call</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- Date Filter -->
+                                        <div class="col-md-4">
+                                            <input type="date" id="event-date-filter" class="form-control" placeholder="Select Date">
+                                        </div>
+                                        
+                                        <!-- Text Search -->
+                                        <div class="col-md-4">
+                                            <input type="text" id="event-search" class="form-control" placeholder="Search Events">
+                                        </div>
+                                    </div>
+
+                                    <div id="event-list">
+                                        <!-- Events will be dynamically loaded here -->
+                                    </div>
+                                    <div id="event-pagination">
+                                        <!-- Pagination links will be dynamically loaded here -->
+                                    </div>
                                 </div>
 
                                 <!-- Gallery Tab -->
@@ -240,7 +243,7 @@ if (isset($_SESSION['role']) && ($_SESSION['role'] === 'admin' || $_SESSION['rol
                                     <h4>Gallery</h4>
                                     <?php if (!empty($images)): ?>
                                         <?php foreach ($images as $image): ?>
-                                            <img src="uploads/user_image/gallery/<?php echo htmlspecialchars($userId); ?>/<?php echo htmlspecialchars($image['image_name']); ?>" class="img-thumbnail">
+                                            <img src="uploads/user_image/gallery/<?php echo htmlspecialchars($userId); ?>/<?php echo htmlspecialchars($image['image_name']); ?>" style="width:1200px;height:600px;" class="img-thumbnail">
                                         <?php endforeach; ?>
                                     <?php else: ?>
                                         <p>No images available.</p>
@@ -254,32 +257,84 @@ if (isset($_SESSION['role']) && ($_SESSION['role'] === 'admin' || $_SESSION['rol
         </section>
     </section>
 </section>
-    <!-- Footer -->
-    <footer class="site-footer">
-      <div class="text-center">
-        <p>&copy; Copyrights <strong><?php echo htmlspecialchars($settings['site_title']); ?></strong>. All Rights Reserved</p>
-        <a href="index.html#" class="go-top">
-          <i class="fa fa-angle-up"></i>
-        </a>
-      </div>
-    </footer>
-  </section>
 
-  <!-- JS scripts placed at the end of the document so the pages load faster -->
-  <script src="assets/lib/jquery/jquery.min.js"></script>
-  <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
-  <script class="include" type="text/javascript" src="assets/lib/jquery.dcjqaccordion.2.7.js"></script>
-  <script src="assets/lib/jquery.scrollTo.min.js"></script>
-  <script src="assets/lib/jquery.nicescroll.js" type="text/javascript"></script>
-  <script src="assets/lib/jquery.sparkline.js"></script>
-  <!--common script for all pages-->
-  <script src="assets/lib/common-scripts.js"></script>
-  <script type="text/javascript" src="assets/lib/gritter/js/jquery.gritter.js"></script>
-  <script type="text/javascript" src="assets/lib/gritter-conf.js"></script>
-  <!--script for this page-->
-  <script src="assets/lib/sparkline-chart.js"></script>
-  <script src="assets/lib/zabuto_calendar.js"></script>
-  <script>
+<script>
+$(document).ready(function() {
+    loadEvents();
+
+    $('#event-search').on('input', function() {
+        loadEvents(1);
+    });
+
+    $('#event-type-filter').on('change', function() {
+        loadEvents(1);
+    });
+
+    $('#event-date-filter').on('change', function() {
+        loadEvents(1);
+    });
+
+    $(document).on('click', '.page-link', function(e) {
+        e.preventDefault();
+        const page = $(this).data('page');
+        loadEvents(page);
+    });
+});
+
+function loadEvents(page = 1) {
+    const query = $('#event-search').val();
+    const eventType = $('#event-type-filter').val();
+    const eventDate = $('#event-date-filter').val();
+
+    $.ajax({
+        url: 'fetch_events.php',
+        method: 'POST',
+        data: {
+            user_id: <?php echo json_encode($userId); ?>,
+            query: query,
+            event_type: eventType,
+            event_date: eventDate,
+            page: page
+        },
+        success: function(response) {
+            const data = JSON.parse(response);
+            $('#event-list').html(data.events);
+            $('#event-pagination').html(data.pagination);
+        },
+        error: function(xhr, status, error) {
+            console.error("Failed to load events:", status, error);
+            alert("Failed to load events.");
+        }
+    });
+}
+
+document.addEventListener('click', function(e) {
+    if (e.target.closest('.delete-event')) { // Use closest to target the button
+        const eventId = e.target.closest('.delete-event').getAttribute('data-event-id');
+        
+        // Confirm deletion
+        if (confirm('Are you sure you want to delete this event?')) {
+            fetch(`delete_event.php?id=${eventId}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Event deleted successfully.');
+                    loadEvents(); // Reload events to refresh the list
+                } else {
+                    alert('Failed to delete event: ' + data.message);
+                }
+            })
+            .catch(error => console.error('Error deleting event:', error));
+        }
+    }
+});
+
+
+
+</script>
+<script>
 document.addEventListener("DOMContentLoaded", function() {
     const userTimeElement = document.getElementById('userTime');
     if (!userTimeElement) {
@@ -289,31 +344,41 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Retrieve timezone and time format from PHP
     const timeZone = '<?php echo $user['timezone'] ?? 'UTC'; ?>';
-    const timeFormat = '<?php echo $settings['time_format'] ?? '24-hours'; ?>';
+    const timeFormat = '<?php echo $settings['time_format'] ?? '24-hour'; ?>';
 
     function updateUserTime() {
         const now = new Date().toLocaleTimeString("en-US", {
             timeZone: timeZone,
             hour: '2-digit',
             minute: '2-digit',
-            hour12: timeFormat === '12-hours' // Explicitly set hour12 based on 12-hours or 24-hours
+            second: '2-digit',
+            hour12: timeFormat === '12-hour' // Explicitly set hour12 based on 12-hour or 24-hour
         });
 
         userTimeElement.textContent = now;
 
-        // Call updateUserTime again after 1 minute
-        setTimeout(updateUserTime, 60000);
+        // Call updateUserTime again after 1 second to show real-time updates
+        setTimeout(updateUserTime, 1000);
     }
 
     // Initial call to display the time immediately
     updateUserTime();
 });
-</script>
-
-
-
 
 </script>
-
+    <!-- Bootstrap and jQuery scripts -->
+    <script src="assets/lib/jquery/jquery.min.js"></script>
+    <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/lib/jquery.dcjqaccordion.2.7.js"></script>
+    <script src="assets/lib/jquery.scrollTo.min.js"></script>
+    <script src="assets/lib/jquery.nicescroll.js"></script>
+    <script src="assets/lib/jquery.sparkline.js"></script>
+    <!--common script for all pages-->
+    <script src="assets/lib/common-scripts.js"></script>
+    <script src="assets/lib/gritter/js/jquery.gritter.js"></script>
+    <script src="assets/lib/gritter-conf.js"></script>
+    <!--script for this page-->
+    <script src="assets/lib/sparkline-chart.js"></script>
+    <script src="assets/lib/zabuto_calendar.js"></script>
 </body>
 </html>

@@ -26,12 +26,21 @@ $settingsGrouped = [
         'smtp_password' => 'SMTP Password',
         'smtp_encryption' => 'SMTP Encryption',
         'support_email' => 'Support Email',
+    ],
+    'general' => [
+        'current_version' => 'Current Version',
+        'time_format' => 'Time Format',
     ]
 ];
 
 // Handle form submission to update settings
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_settings'])) {
     foreach ($_POST['setting_value'] as $key => $value) {
+        // Skip updating 'current_version' since it's not editable
+        if ($key === 'current_version') {
+            continue;
+        }
+
         if ($key === 'smtp_provider' && $value === 'sendgrid') {
             // If SendGrid is selected, update smtp_password with the API key
             $stmt = $pdo->prepare("UPDATE settings SET setting_value = :value WHERE setting_key = :key");
@@ -42,8 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_settings'])) {
             $stmt->execute(['value' => $value, 'key' => $key]);
         }
     }
-    echo "Settings updated successfully.";
-    exit;
+    echo "<script>alert('Settings updated successfully.');</script>";
 }
 
 // Load site settings for display in header and footer
@@ -74,6 +82,7 @@ $settings = getSiteSettings();
           <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#website">Website Settings</a></li>
             <li><a data-toggle="tab" href="#smtp">SMTP Settings</a></li>
+            <li><a data-toggle="tab" href="#general">General Settings</a></li>
           </ul>
 
           <div class="tab-content">
@@ -151,6 +160,32 @@ $settings = getSiteSettings();
                 </div>
               </form>
             </div>
+
+            <!-- General Settings Tab -->
+            <div id="general" class="tab-pane fade">
+              <form id="generalSettingsForm" method="POST" action="settings.php" class="form-horizontal style-form">
+                <div class="form-group">
+                  <label class="control-label col-md-3">Current Version</label>
+                  <div class="col-md-6">
+                    <input type="text" name="setting_value[current_version]" class="form-control" value="<?= htmlspecialchars($dbSettings['current_version'] ?? ''); ?>" readonly>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-md-3">Time Format</label>
+                  <div class="col-md-6">
+                    <select name="setting_value[time_format]" class="form-control" required>
+                      <option value="12-hour" <?= ($dbSettings['time_format'] === '12-hour' ? 'selected' : ''); ?>>12-Hour</option>
+                      <option value="24-hour" <?= ($dbSettings['time_format'] === '24-hour' ? 'selected' : ''); ?>>24-Hour</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-md-6 col-md-offset-3">
+                    <button type="submit" name="save_settings" class="btn btn-theme">Save General Settings</button>
+                  </div>
+                </div>
+              </form>
+            </div>
           </div>
 
         </div>
@@ -185,5 +220,19 @@ $settings = getSiteSettings();
 
     document.getElementById('smtp_provider').dispatchEvent(new Event('change'));
   </script>
+    <!-- Bootstrap and jQuery scripts -->
+    <script src="assets/lib/jquery/jquery.min.js"></script>
+    <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/lib/jquery.dcjqaccordion.2.7.js"></script>
+    <script src="assets/lib/jquery.scrollTo.min.js"></script>
+    <script src="assets/lib/jquery.nicescroll.js"></script>
+    <script src="assets/lib/jquery.sparkline.js"></script>
+    <!--common script for all pages-->
+    <script src="assets/lib/common-scripts.js"></script>
+    <script src="assets/lib/gritter/js/jquery.gritter.js"></script>
+    <script src="assets/lib/gritter-conf.js"></script>
+    <!--script for this page-->
+    <script src="assets/lib/sparkline-chart.js"></script>
+    <script src="assets/lib/zabuto_calendar.js"></script>  
 </body>
 </html>

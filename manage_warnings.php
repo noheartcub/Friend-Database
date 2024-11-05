@@ -126,7 +126,5 @@ $settings = getSiteSettings();
   <!--script for this page-->
   <script src="assets/lib/sparkline-chart.js"></script>
   <script src="assets/lib/zabuto_calendar.js"></script>
-  <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
-
 </body>
 </html>
