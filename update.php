@@ -72,7 +72,7 @@ if (empty($extractedDir)) {
 $sourcePath = $extractedDir[0];
 consoleLog("Detected extracted directory: $sourcePath");
 
-// Step 3: Copy files, skipping `includes/config.php`
+// Step 3: Copy files, skipping `includes/config.php` and `setup.php`
 consoleLog("Starting file copy to update application...");
 $directory = new RecursiveDirectoryIterator($sourcePath, RecursiveDirectoryIterator::SKIP_DOTS);
 $iterator = new RecursiveIteratorIterator($directory, RecursiveIteratorIterator::SELF_FIRST);
@@ -80,8 +80,9 @@ $iterator = new RecursiveIteratorIterator($directory, RecursiveIteratorIterator:
 foreach ($iterator as $file) {
     $destPath = __DIR__ . DIRECTORY_SEPARATOR . $iterator->getSubPathName();
 
-    if (realpath($destPath) === realpath($configPath)) {
-        consoleLog("Skipping config.php to preserve settings.");
+    // Skip config.php and setup.php to prevent overwriting settings or setup files
+    if (realpath($destPath) === realpath($configPath) || basename($file) === 'setup.php') {
+        consoleLog("Skipping " . basename($file) . " to preserve settings or setup configuration.");
         continue;
     }
 
@@ -134,6 +135,12 @@ function deleteDirectory($dir, $protectedDir = null) {
             continue;
         }
 
+        // Skip deletion of setup.php if found
+        if (basename($filePath) === 'setup.php') {
+            consoleLog("Skipping deletion of setup.php: $filePath");
+            continue;
+        }
+
         // Perform deletion and confirm
         if ($fileInfo->isDir()) {
             if (rmdir($filePath)) {
@@ -165,22 +172,30 @@ deleteFileWithConfirmation(__DIR__ . '/database.sql');
 consoleLog("Cleanup completed.");
 consoleLog("Update completed successfully.");
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Update Console</title>
+    <title>Update</title>
     <style>
         body { font-family: monospace; background-color: #1e1e1e; color: #0f0; }
         #console { max-width: 800px; margin: 20px auto; padding: 10px; border: 1px solid #333; background-color: #000; height: 400px; overflow-y: scroll; white-space: pre-wrap; }
+        #go-to-website { display: none; text-align: center; margin-top: 20px; }
+        button { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #45a049; }
     </style>
 </head>
 <body>
     <div id="console">Initializing update...</div>
 
+    <!-- Button to go to website after update completes -->
+    <div id="go-to-website">
+        <button onclick="window.location.href = 'index.php';">Go to Website</button>
+    </div>
+
     <script>
         const consoleDiv = document.getElementById('console');
+        const goToWebsiteButton = document.getElementById('go-to-website');
 
         async function fetchConsoleUpdates() {
             try {
@@ -188,18 +203,18 @@ consoleLog("Update completed successfully.");
                 const data = await response.text();
                 consoleDiv.innerHTML = data;
                 consoleDiv.scrollTop = consoleDiv.scrollHeight;
+
+                // Check if the update is completed to show the button
+                if (data.includes("Update completed successfully.")) {
+                    clearInterval(updateInterval); // Stop refreshing console once update completes
+                    goToWebsiteButton.style.display = 'block'; // Show "Go to Website" button
+                }
             } catch (error) {
                 consoleDiv.innerHTML += "<br>Error fetching updates: " + error;
             }
         }
 
-        // Fetch every second until update completion
-        const interval = setInterval(fetchConsoleUpdates, 1000);
-
-        fetchConsoleUpdates().then(() => {
-            clearInterval(interval);
-            consoleDiv.style.overflowY = 'auto';
-        });
+        const updateInterval = setInterval(fetchConsoleUpdates, 1000);
     </script>
 </body>
 </html>
