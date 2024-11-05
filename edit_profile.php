@@ -145,7 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Execute the statement
     if ($stmt->execute()) {
-        header("Location: list_profile.php?message=Profile updated successfully.");
+        header("Location: /profiles/list?message=Profile updated successfully.");
         exit();
     } else {
         echo "Error updating user.";
