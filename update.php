@@ -176,7 +176,7 @@ consoleLog("Update completed successfully.");
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Update</title>
+    <title>Update Process Console</title>
     <style>
         body { font-family: monospace; background-color: #1e1e1e; color: #0f0; }
         #console { max-width: 800px; margin: 20px auto; padding: 10px; border: 1px solid #333; background-color: #000; height: 400px; overflow-y: scroll; white-space: pre-wrap; }
@@ -186,7 +186,7 @@ consoleLog("Update completed successfully.");
     </style>
 </head>
 <body>
-    <div id="console">Initializing update...</div>
+    <div id="console">Initializing update process...</div>
 
     <!-- Button to go to website after update completes -->
     <div id="go-to-website">
