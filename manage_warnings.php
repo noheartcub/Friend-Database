@@ -85,6 +85,7 @@ $settings = getSiteSettings();
                 <form action="" method="POST">
                     <div class="form-group">
                         <label for="warning_message">Warning Message</label>
+                        <!-- Using nl2br and htmlspecialchars to handle line breaks and special characters -->
                         <textarea name="warning_message" id="warning_message" class="form-control" rows="4" maxlength="255"><?php echo htmlspecialchars($user['warning_message'] ?? ''); ?></textarea>
                     </div>
                     <div class="form-group">
@@ -125,6 +126,5 @@ $settings = getSiteSettings();
   <!--script for this page-->
   <script src="assets/lib/sparkline-chart.js"></script>
   <script src="assets/lib/zabuto_calendar.js"></script>
-    <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
 </body>
 </html>

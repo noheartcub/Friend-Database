@@ -7,12 +7,15 @@ include_once 'includes/functions.php';
 // Ensure only admins can access this page
 requireAdmin();
 
+// Fetch the logged-in admin’s username from the session
+$adminUsername = $_SESSION['username'] ?? 'Unknown Admin';
+
 // Fetch users from the people table for dropdown
 $peopleStmt = $pdo->query("SELECT id, display_name FROM people");
 $people = $peopleStmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Event types for dropdown (as per enum values)
-$eventTypes = ['meeting', 'call', 'conflict', 'gaming_session', 'movie_night', 'note'];
+$eventTypes = ['meeting', 'call', 'conflict', 'gaming_session', 'movie_night', 'note', 'cancel_meeting', 'suggestion', 'lewding', 'nightcall'];
 
 // Handle form submission to add a new event
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_event'])) {
@@ -21,13 +24,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_event'])) {
     $eventDate = $_POST['event_date'];
     $eventDescription = $_POST['event_description'];
 
-    // Insert the new event into the people_events table
-    $stmt = $pdo->prepare("INSERT INTO people_events (person_id, event_type, event_date, description) VALUES (:person_id, :event_type, :event_date, :description)");
+    // Insert the new event into the people_events table with admin username
+    $stmt = $pdo->prepare("INSERT INTO people_events (person_id, event_type, event_date, description, created_by) VALUES (:person_id, :event_type, :event_date, :description, :created_by)");
     $stmt->execute([
         ':person_id' => $personId,
         ':event_type' => $eventType,
         ':event_date' => $eventDate,
         ':description' => $eventDescription,
+        ':created_by' => $adminUsername,
     ]);
 
     header("Location: index.php");

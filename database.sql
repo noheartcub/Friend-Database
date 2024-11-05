@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Värd: 127.0.0.1:3306
--- Tid vid skapande: 04 nov 2024 kl 19:46
+-- Tid vid skapande: 05 nov 2024 kl 12:25
 -- Serverversion: 8.3.0
 -- PHP-version: 8.2.18
 
@@ -151,8 +151,11 @@ CREATE TABLE IF NOT EXISTS `people` (
   `warning_message` varchar(255) DEFAULT NULL,
   `warning_level` enum('low','medium','high') DEFAULT 'low',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=latin1;
 
+--
+-- Dumpning av Data i tabell `people`
+--
 -- --------------------------------------------------------
 
 --
@@ -163,13 +166,18 @@ DROP TABLE IF EXISTS `people_events`;
 CREATE TABLE IF NOT EXISTS `people_events` (
   `id` int NOT NULL AUTO_INCREMENT,
   `person_id` int NOT NULL,
-  `event_type` enum('meeting','call','conflict','gaming_session','movie_night','note') DEFAULT 'note',
+  `event_type` enum('meeting','call','conflict','gaming_session','movie_night','note','cancel_meeting','suggestion','lewding','nightcall') CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT 'note',
   `event_date` date DEFAULT NULL,
   `description` text,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT 'Unknown',
   PRIMARY KEY (`id`),
   KEY `person_id` (`person_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
+
+--
+-- Dumpning av Data i tabell `people_events`
+--
 
 -- --------------------------------------------------------
 
@@ -185,7 +193,11 @@ CREATE TABLE IF NOT EXISTS `people_gallery` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `person_id` (`person_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+--
+-- Dumpning av Data i tabell `people_gallery`
+--
 
 -- --------------------------------------------------------
 
@@ -277,8 +289,8 @@ CREATE TABLE IF NOT EXISTS `settings` (
 
 INSERT INTO `settings` (`id`, `setting_key`, `setting_value`) VALUES
 (0, 'current_version', '2.0.0'),
-(1, 'site_url', 'https://devtest.lumavex.com'),
-(2, 'site_title', 'Friend Manager v2'),
+(1, 'site_url', 'http://192.168.1.8'),
+(2, 'site_title', 'Friend Manager v3'),
 (3, 'site_description', 'A description of the site'),
 (4, 'support_email', 'support@lumavex.com'),
 (5, 'smtp_host', 'smtp.sendgrid.net'),
@@ -286,7 +298,7 @@ INSERT INTO `settings` (`id`, `setting_key`, `setting_value`) VALUES
 (7, 'smtp_user', 'apikey'),
 (8, 'smtp_pass', 'your-password'),
 (9, 'smtp_encryption', 'TLS'),
-(12, 'time_format', '12-hour'),
+(12, 'time_format', '24-hour'),
 (13, 'smtp_provider', 'sendgrid');
 
 -- --------------------------------------------------------
@@ -364,6 +376,9 @@ CREATE TABLE IF NOT EXISTS `users` (
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 
+--
+-- Dumpning av Data i tabell `users`
+--
 -- --------------------------------------------------------
 
 --
