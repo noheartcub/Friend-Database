@@ -89,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bindParam(':hide_address', $hideAddress);
 
     if ($stmt->execute()) {
-        header("Location: list_profile.php");
+        header("Location: /profiles/list");
         exit();
     } else {
         echo "Error adding user.";
