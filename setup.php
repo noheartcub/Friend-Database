@@ -102,7 +102,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <title>Setup Script</title>
-    <link href="assets/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="container">
@@ -160,7 +160,7 @@ try {
         </form>
     </div>
 
-    <script src="assets/lib/jquery/jquery.min.js"></script>
-    <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../assets/lib/jquery/jquery.min.js"></script>
+    <script src="../assets/lib/bootstrap/js/bootstrap.min.js"></script>
 </body>
 </html>

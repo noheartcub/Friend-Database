@@ -1,0 +1,43 @@
+RewriteEngine On
+
+# Check if the requested file or directory exists
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Rewrite friendly URLs to their corresponding PHP files
+RewriteRule ^users/list$ list_users.php [L]
+RewriteRule ^users/add$ add_user.php [L]
+RewriteRule ^users/edit$ edit_user.php [L]
+RewriteRule ^users/suspend$ suspend_user.php [L]
+RewriteRule ^users/delete$ delete_user.php [L]
+
+RewriteRule ^profiles/list$ list_profile.php [L]
+RewriteRule ^profiles/add$ add_profile.php [L]
+RewriteRule ^profiles/edit$ edit_profile.php [L]
+RewriteRule ^profiles/delete$ delete_profile.php [L]
+RewriteRule ^profiles/manage-warnings$ manage_warnings.php [L]
+RewriteRule ^profiles/remove-warning$ remove_warning.php [L]
+RewriteRule ^profiles/upload$ upload_image_profile.php [L]
+RewriteRule ^profiles/delete-image$ delete_image_profile.php [L]
+
+RewriteRule ^avatars/list$ list_avatars.php [L]
+RewriteRule ^avatars/add$ add_avatar.php [L]
+RewriteRule ^avatars/delete$ delete_avatar.php [L]
+
+RewriteRule ^gallery/view$ view_images.php [L]
+RewriteRule ^gallery/upload$ upload_image.php [L]
+
+RewriteRule ^events/register$ register_event.php [L]
+
+
+RewriteRule ^settings$ settings.php [L]
+
+# Redirect root URLs
+RewriteRule ^$ index.php [L]
+RewriteRule ^login$ login.php [L]
+RewriteRule ^logout$ logout.php [L]
+RewriteRule ^register-event$ register_event.php [L]
+RewriteRule ^projects$ projects.php [L]
+RewriteRule ^update$ update.php [L]
+RewriteRule ^yoursettings$ yoursettings.php [L]
+RewriteRule ^unauthorized$ unauthorized.php [L]

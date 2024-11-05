@@ -70,9 +70,9 @@ $settings = getSiteSettings();
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?php echo htmlspecialchars($settings['site_title']); ?> - Edit Task</title>
-  <link href="assets/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="assets/lib/font-awesome/css/font-awesome.css" rel="stylesheet">
-  <link href="assets/css/style.css" rel="stylesheet">
+  <link href="../assets/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/lib/font-awesome/css/font-awesome.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
 </head>
 
 <body>
@@ -132,7 +132,7 @@ $settings = getSiteSettings();
       </div>
     </footer>
   </section>
-  <script src="assets/lib/jquery/jquery.min.js"></script>
-  <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
+  <script src="../assets/lib/jquery/jquery.min.js"></script>
+  <script src="../assets/lib/bootstrap/js/bootstrap.min.js"></script>
 </body>
 </html>

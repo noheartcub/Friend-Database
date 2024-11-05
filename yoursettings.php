@@ -75,11 +75,11 @@ $settings = getSiteSettings();
 <head>
   <meta charset="utf-8">
   <title><?php echo htmlspecialchars($settings['site_title']); ?> - Your Settings</title>
-  <link href="assets/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="assets/lib/font-awesome/css/font-awesome.css" rel="stylesheet">
-  <link href="assets/css/style.css" rel="stylesheet">
-  <link href="assets/css/style-responsive.css" rel="stylesheet">
-  <script src="assets/lib/jquery/jquery.min.js"></script>
+  <link href="../assets/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/lib/font-awesome/css/font-awesome.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link href="../assets/css/style-responsive.css" rel="stylesheet">
+  <script src="../assets/lib/jquery/jquery.min.js"></script>
 </head>
 
 <body>
@@ -149,10 +149,10 @@ $settings = getSiteSettings();
     </footer>
   </section>
 
-  <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
-  <script src="assets/lib/jquery.dcjqaccordion.2.7.js"></script>
-  <script src="assets/lib/jquery.scrollTo.min.js"></script>
-  <script src="assets/lib/jquery.nicescroll.js"></script>
-  <script src="assets/lib/common-scripts.js"></script>
+  <script src="../assets/lib/bootstrap/js/bootstrap.min.js"></script>
+  <script src="../assets/lib/jquery.dcjqaccordion.2.7.js"></script>
+  <script src="../assets/lib/jquery.scrollTo.min.js"></script>
+  <script src="../assets/lib/jquery.nicescroll.js"></script>
+  <script src="../assets/lib/common-scripts.js"></script>
 </body>
 </html>
