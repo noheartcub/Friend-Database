@@ -125,6 +125,7 @@ $settings = getSiteSettings();
                 <div class="tab-content">
                     <!-- Website Settings Tab -->
                     <div id="website" class="tab-pane fade in active">
+                    <br>                        
                         <form id="websiteSettingsForm" method="POST" action="settings.php" class="form-horizontal style-form">
                             <?php foreach ($settingsGrouped['website'] as $key => $label): ?>
                                 <div class="form-group">
@@ -144,6 +145,7 @@ $settings = getSiteSettings();
 
                     <!-- SMTP Settings Tab -->
                     <div id="smtp" class="tab-pane fade">
+                    <br>                        
                         <form id="smtpSettingsForm" method="POST" action="settings.php" class="form-horizontal style-form">
                             <div class="form-group">
                                 <label class="control-label col-md-3">SMTP Provider</label>
@@ -190,6 +192,7 @@ $settings = getSiteSettings();
 
                     <!-- General Settings Tab -->
                     <div id="general" class="tab-pane fade">
+                    <br>                        
                         <form id="generalSettingsForm" method="POST" action="settings.php" class="form-horizontal style-form">
                             <div class="form-group">
                                 <label class="control-label col-md-3">Current Version</label>
@@ -216,6 +219,7 @@ $settings = getSiteSettings();
 
                     <!-- Module Settings Tab -->
                     <div id="modules" class="tab-pane fade">
+                        <br>
                         <form id="moduleSettingsForm" method="POST" action="settings.php" class="form-horizontal style-form">
                             <?php foreach ($settingsGrouped['modules'] as $key => $label): ?>
                                 <div class="form-group">
@@ -267,5 +271,21 @@ $settings = getSiteSettings();
 
     document.getElementById('smtp_provider').dispatchEvent(new Event('change'));
 </script>
+  <!-- js placed at the end of the document so the pages load faster -->
+  <script src="assets/lib/jquery/jquery.min.js"></script>
+
+  <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
+  <script class="include" type="text/javascript" src="assets/lib/jquery.dcjqaccordion.2.7.js"></script>
+  <script src="assets/lib/jquery.scrollTo.min.js"></script>
+  <script src="assets/lib/jquery.nicescroll.js" type="text/javascript"></script>
+  <script src="assets/lib/jquery.sparkline.js"></script>
+  <!--common script for all pages-->
+  <script src="assets/lib/common-scripts.js"></script>
+  <script type="text/javascript" src="assets/lib/gritter/js/jquery.gritter.js"></script>
+  <script type="text/javascript" src="assets/lib/gritter-conf.js"></script>
+  <!--script for this page-->
+  <script src="assets/lib/sparkline-chart.js"></script>
+  <script src="assets/lib/zabuto_calendar.js"></script>
+  
 </body>
 </html>

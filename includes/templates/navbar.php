@@ -60,16 +60,6 @@
                 </ul>
             </li>
             <?php endif; ?>
-
-            <?php if (!empty($modules['task_list'])): ?>
-            <li class="mt">
-                <a href="projects.php">
-                    <i class="fa fa-tasks"></i>
-                    <span>Task List</span>
-                </a>
-            </li>
-            <?php endif; ?>
-
             <?php if (!empty($modules['avatar_manager'])): ?>
             <li class="sub-menu">
                 <a href="javascript:;">
@@ -132,6 +122,14 @@
                 <ul class="sub">
                     <li><a href="register_event.php">Register new event</a></li>
                 </ul>
+            </li>
+            <?php endif; ?>
+            <?php if (!empty($modules['task_list'])): ?>
+            <li class="mt">
+                <a href="projects.php">
+                    <i class="fa fa-tasks"></i>
+                    <span>Task List</span>
+                </a>
             </li>
             <?php endif; ?>
 
