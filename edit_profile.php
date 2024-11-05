@@ -230,7 +230,7 @@ $settings = getSiteSettings();
                     <input type="text" name="twitch" class="form-control" value="<?php echo htmlspecialchars($user['twitch'] ?? ''); ?>">
                 </div>
                 <div class="form-group">
-                    <label for="birthday">Birthday:</label>
+                    <label for="birthday">Birth Date:</label>
                     <input type="date" name="birthday" class="form-control" value="<?php echo htmlspecialchars($user['birthday'] ?? ''); ?>">
                 </div>
                 <div class="form-group">

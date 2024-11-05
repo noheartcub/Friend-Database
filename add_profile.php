@@ -203,7 +203,7 @@ $settings = getSiteSettings();
                   </div>
                 </div>                
                 <div class="form-group">
-                  <label class="control-label col-md-3">Birthday</label>
+                  <label class="control-label col-md-3">Birth Date</label>
                   <div class="col-md-4">
                     <input type="date" name="birthday" class="form-control" max="9999-12-31">
                   </div>
