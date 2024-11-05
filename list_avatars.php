@@ -75,7 +75,7 @@ $people = $peopleStmt->fetchAll(PDO::FETCH_ASSOC);
       
       <!-- Add People Button (visible to admin only) -->
       <?php if (hasRole('admin')): ?>
-        <a href="add_avatar.php" class="btn btn-primary">Add Avatar</a>
+        <a href="add" class="btn btn-primary">Add Avatar</a>
         <br><br>
       <?php endif; ?>
       
@@ -101,7 +101,7 @@ $people = $peopleStmt->fetchAll(PDO::FETCH_ASSOC);
                         <?php foreach ($people as $person): ?>
                           <tr class="gradeX">
                           <td>
-    <img src="uploads/avatars/<?php echo htmlspecialchars($person['avatarimage']); ?>" style="width: 100px; height: 100px;"></td>
+    <img src="../uploads/avatars/<?php echo htmlspecialchars($person['avatarimage']); ?>" style="width: 100px; height: 100px;"></td>
     <td><?php echo htmlspecialchars($person['avatar_name']); ?></td>
     <td><?php echo htmlspecialchars($person['avatarid']); ?></td>
     <td><?php echo htmlspecialchars($person['creator']); ?></td>

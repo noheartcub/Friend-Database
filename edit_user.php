@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
         $updateStmt->bindParam(':id', $userId);
 
         if ($updateStmt->execute()) {
-            header("Location: list_users.php");
+            header("Location: /users/list"); // Redirect using friendly URL
             exit();
         } else {
             echo "Error updating user.";
@@ -162,7 +162,7 @@ $settings = getSiteSettings();
         var userId = $(this).val();
         if (userId) {
           $.ajax({
-            url: 'edit_user.php',
+            url: '/users/edit', // Use friendly URL here
             type: 'POST',
             data: { fetch_user: 1, user_id: userId },
             dataType: 'json',

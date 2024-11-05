@@ -21,20 +21,18 @@ $eventTypes = ['meeting', 'call', 'conflict', 'gaming_session', 'movie_night', '
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_event'])) {
     $personId = $_POST['person_id'];
     $eventType = $_POST['event_type'];
-    $eventDate = $_POST['event_date'];
     $eventDescription = $_POST['event_description'];
 
     // Insert the new event into the people_events table with admin username
-    $stmt = $pdo->prepare("INSERT INTO people_events (person_id, event_type, event_date, description, created_by) VALUES (:person_id, :event_type, :event_date, :description, :created_by)");
+    $stmt = $pdo->prepare("INSERT INTO people_events (person_id, event_type, description, created_by) VALUES (:person_id, :event_type, :description, :created_by)");
     $stmt->execute([
         ':person_id' => $personId,
         ':event_type' => $eventType,
-        ':event_date' => $eventDate,
         ':description' => $eventDescription,
         ':created_by' => $adminUsername,
     ]);
 
-    header("Location: index.php");
+    header("Location: /profiles/list");
     exit();
 }
 
@@ -48,10 +46,9 @@ $settings = getSiteSettings();
     <meta charset="utf-8">
     <title><?php echo htmlspecialchars($settings['site_title']); ?> - Add Event</title>
     <link href="../assets/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../assets/lib/font-awesome/css/font-awesome.css" rel="stylesheet">
-    <link href="../assets/css/style.css" rel="stylesheet">
-    <link href="../assets/css/style-responsive.css" rel="stylesheet">
-    <script src="../assets/lib/chart-master/Chart.js"></script>
+  <link href="../assets/lib/font-awesome/css/font-awesome.css" rel="stylesheet" />
+  <link href="../assets/css/style.css" rel="stylesheet">
+
 </head>
 <body>
     <section id="container">
@@ -63,7 +60,7 @@ $settings = getSiteSettings();
             <section class="wrapper">
                 <h3><i class="fa fa-calendar-plus-o"></i> Add New Event</h3>
                 <div class="form-panel">
-                    <form action="register_event.php" method="POST" class="form-horizontal style-form">
+                    <form action="" method="POST" class="form-horizontal style-form">
                         <div class="form-group">
                             <label class="control-label col-md-3">Select Person <span style="color:red;">*</span></label>
                             <div class="col-md-6">
@@ -87,12 +84,6 @@ $settings = getSiteSettings();
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-md-3">Event Date <span style="color:red;">*</span></label>
-                            <div class="col-md-6">
-                                <input type="date" name="event_date" class="form-control" required>
-                            </div>
-                        </div>
-                        <div class="form-group">
                             <label class="control-label col-md-3">Description</label>
                             <div class="col-md-6">
                                 <textarea name="event_description" class="form-control" placeholder="Details about the event"></textarea>
@@ -113,27 +104,26 @@ $settings = getSiteSettings();
         <footer class="site-footer">
             <div class="text-center">
                 <p>&copy; Copyrights <strong><?php echo htmlspecialchars($settings['site_title']); ?></strong>. All Rights Reserved</p>
-                <a href="index.html#" class="go-top">
-                    <i class="fa fa-angle-up"></i>
-                </a>
+                <a href="#" class="go-top"><i class="fa fa-angle-up"></i></a>
             </div>
         </footer>
         <!--footer end-->
     </section>
 
-    <!-- Bootstrap and jQuery scripts -->
-    <script src="../assets/lib/jquery/jquery.min.js"></script>
-    <script src="../assets/lib/bootstrap/js/bootstrap.min.js"></script>
-    <script src="../assets/lib/jquery.dcjqaccordion.2.7.js"></script>
-    <script src="../assets/lib/jquery.scrollTo.min.js"></script>
-    <script src="../assets/lib/jquery.nicescroll.js"></script>
-    <script src="../assets/lib/jquery.sparkline.js"></script>
-    <!--common script for all pages-->
-    <script src="../assets/lib/common-scripts.js"></script>
-    <script src="../assets/lib/gritter/js/jquery.gritter.js"></script>
-    <script src="../assets/lib/gritter-conf.js"></script>
-    <!--script for this page-->
-    <script src="../assets/lib/sparkline-chart.js"></script>
-    <script src="../assets/lib/zabuto_calendar.js"></script>
+<!-- js placed at the end of the document so the pages load faster -->
+<script src="../assets/lib/jquery/jquery.min.js"></script>
+
+<script src="../assets/lib/bootstrap/js/bootstrap.min.js"></script>
+<script class="include" type="text/javascript" src="../assets/lib/jquery.dcjqaccordion.2.7.js"></script>
+<script src="../assets/lib/jquery.scrollTo.min.js"></script>
+<script src="../assets/lib/jquery.nicescroll.js" type="text/javascript"></script>
+<script src="../assets/lib/jquery.sparkline.js"></script>
+<!--common script for all pages-->
+<script src="../assets/lib/common-scripts.js"></script>
+<script type="text/javascript" src="../assets/lib/gritter/js/jquery.gritter.js"></script>
+<script type="text/javascript" src="../assets/lib/gritter-conf.js"></script>
+<!--script for this page-->
+<script src="../assets/lib/sparkline-chart.js"></script>
+<script src="../assets/lib/zabuto_calendar.js"></script>
 </body>
 </html>
