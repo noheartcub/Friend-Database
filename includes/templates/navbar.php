@@ -12,6 +12,28 @@
                     <span>Dashboard</span>
                 </a>
             </li>
+
+            <?php
+            // Include config file to establish a database connection
+            include_once 'includes/config.php';
+
+            // Fetch module statuses from the settings table
+            $modules = [];
+            try {
+                $query = "SELECT setting_key, setting_value FROM settings WHERE setting_key IN ('profile_management', 'avatar_manager', 'gallery', 'user_manager', 'event_manager', 'task_list')";
+                $stmt = $pdo->prepare($query);
+                $stmt->execute();
+                $results = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+
+                foreach ($results as $key => $value) {
+                    $modules[$key] = (bool)$value;  // Convert to boolean
+                }
+            } catch (PDOException $e) {
+                echo "Error fetching modules: " . htmlspecialchars($e->getMessage());
+            }
+            ?>
+
+            <?php if (!empty($modules['profile_management'])): ?>
             <li class="sub-menu">
                 <a href="javascript:;">
                     <i class="fa fa-user"></i>
@@ -22,21 +44,33 @@
                     <hr>
                     <?php if (hasRole('admin')): ?>
                         <li><a href="add_profile.php">Add Profile</a></li>
-                        <li><a href="upload_image_profile.php">Upload a Image</a></li>
-                        <li><a href="delete_image_profile.php">Delete a Image</a></li>
+                        <li><a href="upload_image_profile.php">Upload an Image</a></li>
+                        <li><a href="delete_image_profile.php">Delete an Image</a></li>
                     <?php endif; ?>
                     <?php if (hasRole('admin') && $current_page === 'profile.php' && $userId !== null): ?>
                         <?php if (empty($user['warning_message'])): ?>
-                            <li><a href="manage_warnings.php?id=<?= $userId ?>">Add Warning</a></li>
+                            <li><a href="manage_warnings.php?id=<?= htmlspecialchars($userId) ?>">Add Warning</a></li>
                         <?php else: ?>
-                            <li><a href="manage_warnings.php?id=<?= $userId ?>">Manage Warning</a></li>
-                            <li><a href="remove_warning.php?id=<?= $userId ?>" onclick="return confirm('Are you sure you want to remove this warning?');">Remove Warning</a></li>
+                            <li><a href="manage_warnings.php?id=<?= htmlspecialchars($userId) ?>">Manage Warning</a></li>
+                            <li><a href="remove_warning.php?id=<?= htmlspecialchars($userId) ?>" onclick="return confirm('Are you sure you want to remove this warning?');">Remove Warning</a></li>
                         <?php endif; ?>
-                        <li><a href="edit_profile.php?id=<?= $userId ?>">Edit This Profile</a></li>
-                        <li><a href="delete_profile.php?id=<?= $userId ?>" onclick="return confirm('Are you sure you want to delete this profile?');">Delete This Profile</a></li>
+                        <li><a href="edit_profile.php?id=<?= htmlspecialchars($userId) ?>">Edit This Profile</a></li>
+                        <li><a href="delete_profile.php?id=<?= htmlspecialchars($userId) ?>" onclick="return confirm('Are you sure you want to delete this profile?');">Delete This Profile</a></li>
                     <?php endif; ?>
                 </ul>
             </li>
+            <?php endif; ?>
+
+            <?php if (!empty($modules['task_list'])): ?>
+            <li class="mt">
+                <a href="projects.php">
+                    <i class="fa fa-tasks"></i>
+                    <span>Task List</span>
+                </a>
+            </li>
+            <?php endif; ?>
+
+            <?php if (!empty($modules['avatar_manager'])): ?>
             <li class="sub-menu">
                 <a href="javascript:;">
                     <i class="fa fa-users"></i>
@@ -51,6 +85,9 @@
                     <?php endif; ?>
                 </ul>
             </li>
+            <?php endif; ?>
+
+            <?php if (!empty($modules['gallery'])): ?>
             <li class="sub-menu">
                 <a href="javascript:;">
                     <i class="fa fa-camera"></i>
@@ -65,7 +102,9 @@
                     <?php endif; ?>
                 </ul>
             </li>
-            <?php if (hasRole('admin')): ?>
+            <?php endif; ?>
+
+            <?php if (!empty($modules['user_manager'])): ?>
             <li class="sub-menu">
                 <a href="javascript:;">
                     <i class="fa fa-users"></i>
@@ -74,41 +113,36 @@
                 <ul class="sub">
                     <li><a href="list_users.php">List all Users</a></li>
                     <hr>
+                    <?php if (hasRole('admin')): ?>
                         <li><a href="add_user.php">Add new Users</a></li>
                         <li><a href="delete_user.php">Delete a User</a></li>
                         <li><a href="edit_user.php">Edit a User</a></li>
                         <li><a href="suspend_user.php">Suspend a User</a></li>
-
                     <?php endif; ?>
                 </ul>
-            </li>       
-            <?php if (hasRole('admin')): ?>
+            </li>
+            <?php endif; ?>
+
+            <?php if (!empty($modules['event_manager'])): ?>
             <li class="sub-menu">
                 <a href="javascript:;">
                     <i class="fa fa-calendar"></i>
                     <span>Event Management</span>
                 </a>
                 <ul class="sub">
-                        <li><a href="register_event.php">Register new event</a></li>
-
-                    <?php endif; ?>
+                    <li><a href="register_event.php">Register new event</a></li>
                 </ul>
-            </li>
-            <li class="mt">
-                <a href="projects.php">
-                    <i class="fa fa-tasks"></i>
-                    <span>Task List</span>
-                </a>
-            </li>             
-            <?php if (hasRole('admin')): ?>
-                <li class="mt">
-                <a href="settings.php">
-                    <i class="fa fa-gears"></i>
-                    <span>Site Settings</span>
-                </a>
             </li>
             <?php endif; ?>
 
+            <?php if (hasRole('admin')): ?>
+                <li class="mt">
+                    <a href="settings.php">
+                        <i class="fa fa-gears"></i>
+                        <span>Site Settings</span>
+                    </a>
+                </li>
+            <?php endif; ?>
         </ul>
         <!-- sidebar menu end-->
     </div>

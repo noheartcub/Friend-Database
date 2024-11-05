@@ -230,7 +230,6 @@ INSERT INTO `permissions` (`id`, `permission_name`, `description`) VALUES
 (15, 'edit_roles', 'Allows editing roles'),
 (16, 'manage_smtp_settings', 'Allows editing SMTP settings'),
 (17, 'manage_system_settings', 'Allows editing core system settings');
-
 -- --------------------------------------------------------
 
 --
@@ -299,8 +298,13 @@ INSERT INTO `settings` (`id`, `setting_key`, `setting_value`) VALUES
 (8, 'smtp_pass', 'your-password'),
 (9, 'smtp_encryption', 'TLS'),
 (12, 'time_format', '24-hour'),
-(13, 'smtp_provider', 'sendgrid');
-
+(13, 'smtp_provider', 'sendgrid'),
+(14, 'profile_management', '1'),  
+(15, 'avatar_manager', '1'),      
+(16, 'gallery', '1'),             
+(17, 'user_manager', '1'),        
+(18, 'event_manager', '1'),
+(19, 'task_list', '1');         
 -- --------------------------------------------------------
 
 --
