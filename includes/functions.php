@@ -127,6 +127,11 @@ function uploadImage($file, $targetDir = 'uploads/', $maxSize = 2 * 1024 * 1024)
     $fileName = uniqid('img_', true) . '.' . pathinfo($file['name'], PATHINFO_EXTENSION);
     $targetFile = $targetDir . $fileName;
 
+    // Ensure the target directory exists
+    if (!file_exists($targetDir)) {
+        mkdir($targetDir, 0777, true);
+    }
+
     if (move_uploaded_file($file['tmp_name'], $targetFile)) {
         return ['success' => true, 'path' => $targetFile];
     }
