@@ -109,7 +109,7 @@ consoleLog("Starting cleanup of temporary files...");
 // Function to delete a file with logging and confirmation
 function deleteFileWithConfirmation($filePath) {
     if (file_exists($filePath)) {
-        if (unlink($filePath)) {
+        if (@unlink($filePath)) {
             consoleLog("Deleted file: $filePath");
         } else {
             consoleLog("Failed to delete file: $filePath");
@@ -121,6 +121,11 @@ function deleteFileWithConfirmation($filePath) {
 
 // Function to delete directories except protected ones (like uploads)
 function deleteDirectory($dir, $protectedDir = null) {
+    if (!is_dir($dir)) {
+        consoleLog("Directory not found: $dir");
+        return;
+    }
+
     $files = new RecursiveIteratorIterator(
         new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS),
         RecursiveIteratorIterator::CHILD_FIRST
@@ -143,7 +148,7 @@ function deleteDirectory($dir, $protectedDir = null) {
 
         // Perform deletion and confirm
         if ($fileInfo->isDir()) {
-            if (rmdir($filePath)) {
+            if (@rmdir($filePath)) {
                 consoleLog("Deleted directory: $filePath");
             } else {
                 consoleLog("Failed to delete directory: $filePath");
@@ -155,7 +160,7 @@ function deleteDirectory($dir, $protectedDir = null) {
 
     // Delete the main directory if it's not protected
     if (!$protectedDir || realpath($dir) !== realpath($protectedDir)) {
-        if (rmdir($dir)) {
+        if (@rmdir($dir)) {
             consoleLog("Deleted main directory: $dir");
         } else {
             consoleLog("Failed to delete main directory: $dir");
