@@ -88,16 +88,16 @@ $isBanned = isset($_SESSION['banned_message']);
   <title><?php echo htmlspecialchars($settings['site_title']); ?> - Login</title>
 
   <!-- Favicons -->
-  <link href="assets/img/favicon.png" rel="icon">
-  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link href="../assets/img/favicon.png" rel="icon">
+  <link href="../assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
   <!-- Bootstrap core CSS -->
-  <link href="assets/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <!--external css-->
-  <link href="assets/lib/font-awesome/css/font-awesome.css" rel="stylesheet" />
+  <link href="../assets/lib/font-awesome/css/font-awesome.css" rel="stylesheet" />
   <!-- Custom styles for this template -->
-  <link href="assets/css/style.css" rel="stylesheet">
-  <link href="assets/css/style-responsive.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link href="../assets/css/style-responsive.css" rel="stylesheet">
 </head>
 
 <body>
@@ -160,11 +160,11 @@ $isBanned = isset($_SESSION['banned_message']);
   </div>
 
   <!-- JS placed at the end of the document so the pages load faster -->
-  <script src="assets/lib/jquery/jquery.min.js"></script>
-  <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="assets/lib/jquery.backstretch.min.js"></script>
+  <script src="../assets/lib/jquery/jquery.min.js"></script>
+  <script src="../assets/lib/bootstrap/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="../assets/lib/jquery.backstretch.min.js"></script>
   <script>
-    $.backstretch("assets/img/login-bg.jpg", { speed: 500 });
+    $.backstretch("../assets/img/login-bg.jpg", { speed: 500 });
   </script>
 </body>
 

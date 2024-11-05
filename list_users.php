@@ -31,15 +31,15 @@ $users = $userStmt->fetchAll(PDO::FETCH_ASSOC);
   <title><?php echo htmlspecialchars($settings['site_title']); ?> - User List</title>
 
   <!-- Favicons -->
-  <link href="assets/img/favicon.png" rel="icon">
-  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link href="../assets/img/favicon.png" rel="icon">
+  <link href="../assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
   <!-- Bootstrap core CSS -->
-  <link href="assets/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="assets/lib/font-awesome/css/font-awesome.css" rel="stylesheet">
-  <link href="assets/css/style.css" rel="stylesheet">
-  <link href="assets/css/style-responsive.css" rel="stylesheet">
-  <script src="assets/lib/chart-master/Chart.js"></script>
+  <link href="../assets/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/lib/font-awesome/css/font-awesome.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link href="../assets/css/style-responsive.css" rel="stylesheet">
+  <script src="../assets/lib/chart-master/Chart.js"></script>
 </head>
 
 <body>
@@ -81,9 +81,9 @@ $users = $userStmt->fetchAll(PDO::FETCH_ASSOC);
                   <tr class="gradeX">
                     <td>
                       <?php if ($user['profile_image']): ?>
-                        <img src="uploads/user_image/<?php echo htmlspecialchars($user['profile_image']); ?>" class="img-circle" style="width: 100px; height: 100px;">
+                        <img src="../uploads/user_image/<?php echo htmlspecialchars($user['profile_image']); ?>" class="img-circle" style="width: 100px; height: 100px;">
                       <?php else: ?>
-                        <img src="uploads/user_image/placeholder.png" class="img-circle" style="width: 100px; height: 100px;">
+                        <img src="../uploads/user_image/placeholder.png" class="img-circle" style="width: 100px; height: 100px;">
                       <?php endif; ?>
                     </td>
                     <td><?php echo htmlspecialchars($user['username']); ?></td>
@@ -117,13 +117,13 @@ $users = $userStmt->fetchAll(PDO::FETCH_ASSOC);
   </section>
 
   <!-- js placed at the end of the document so the pages load faster -->
-  <script src="assets/lib/jquery/jquery.min.js"></script>
-  <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
-  <script class="include" type="text/javascript" src="assets/lib/jquery.dcjqaccordion.2.7.js"></script>
-  <script src="assets/lib/jquery.scrollTo.min.js"></script>
-  <script src="assets/lib/jquery.nicescroll.js" type="text/javascript"></script>
-  <script src="assets/lib/jquery.sparkline.js"></script>
-  <script src="assets/lib/common-scripts.js"></script>
+  <script src="../assets/lib/jquery/jquery.min.js"></script>
+  <script src="../assets/lib/bootstrap/js/bootstrap.min.js"></script>
+  <script class="include" type="text/javascript" src="../assets/lib/jquery.dcjqaccordion.2.7.js"></script>
+  <script src="../assets/lib/jquery.scrollTo.min.js"></script>
+  <script src="../assets/lib/jquery.nicescroll.js" type="text/javascript"></script>
+  <script src="../assets/lib/jquery.sparkline.js"></script>
+  <script src="../assets/lib/common-scripts.js"></script>
 </body>
 
 </html>

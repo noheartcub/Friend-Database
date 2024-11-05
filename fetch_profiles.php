@@ -48,7 +48,7 @@ $people = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $profileRows = "";
 foreach ($people as $person) {
     $profileRows .= "<tr class='gradeX'>";
-    $profileRows .= "<td><img src='uploads/user_image/" . htmlspecialchars($person['profile_image']) . "' class='img-circle' style='width: 100px; height: 100px;'></td>";
+    $profileRows .= "<td><img src='../uploads/user_image/" . htmlspecialchars($person['profile_image']) . "' class='img-circle' style='width: 100px; height: 100px;'></td>";
 
     // Display name with warning icon if there's a warning message
     $profileRows .= "<td>";
@@ -72,11 +72,11 @@ foreach ($people as $person) {
     // Birthday column
     $profileRows .= hasRole('admin') || !$person['hide_birthday'] ? "<td>" . htmlspecialchars($person['birthday'] ?? 'Not Entered') . "</td>" : "<td>Hidden</td>";
 
-    // Actions (View, Edit, Delete)
+    // Actions (View, Edit, Delete) with new URL format
     $profileRows .= "<td style='text-align: center;'>
-                <a href='profile.php?id=" . $person['id'] . "' title='View Profile'><i class='fa fa-eye' style='color: blue; font-size: 1.5em;'></i></a>
-                <a href='edit_profile.php?id=" . $person['id'] . "' title='Edit Profile'><i class='fa fa-pencil' style='color: orange; font-size: 1.5em;'></i></a>
-                <a href='delete_profile.php?id=" . $person['id'] . "' title='Delete Profile' onclick=\"return confirm('Are you sure you want to delete this profile?');\"><i class='fa fa-trash' style='color: red; font-size: 1.5em;'></i></a>
+                <a href='../profile.php?id=" . $person['id'] . "' title='View Profile'><i class='fa fa-eye' style='color: blue; font-size: 1.5em;'></i></a>
+                <a href='../profiles/edit?id=" . $person['id'] . "' title='Edit Profile'><i class='fa fa-pencil' style='color: orange; font-size: 1.5em;'></i></a>
+                <a href='../profiles/delete?id=" . $person['id'] . "' title='Delete Profile' onclick=\"return confirm('Are you sure you want to delete this profile?');\"><i class='fa fa-trash' style='color: red; font-size: 1.5em;'></i></a>
               </td>";
     $profileRows .= "</tr>";
 }

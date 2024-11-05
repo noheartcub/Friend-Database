@@ -1,8 +1,8 @@
 <?php
 // Start the session and include necessary files
 session_start();
-include_once 'includes/config.php';
-include_once 'includes/functions.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config.php'; // Use absolute path
+include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/functions.php'; // Use absolute path
 
 // Check if the user is logged in
 if (!isLoggedIn()) {
@@ -22,12 +22,12 @@ $settings = getSiteSettings();
   <title><?php echo htmlspecialchars($settings['site_title']); ?> - Profiles</title>
 
   <!-- Bootstrap and external CSS -->
-  <link href="assets/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="assets/lib/font-awesome/css/font-awesome.css" rel="stylesheet" />
-  <link href="assets/css/style.css" rel="stylesheet">
-  <link href="assets/css/style-responsive.css" rel="stylesheet">
-  <script src="assets/lib/jquery/jquery.min.js"></script>
-  <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
+  <link href="/assets/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/assets/lib/font-awesome/css/font-awesome.css" rel="stylesheet" />
+  <link href="/assets/css/style.css" rel="stylesheet">
+  <link href="/assets/css/style-responsive.css" rel="stylesheet">
+  <script src="/assets/lib/jquery/jquery.min.js"></script>
+  <script src="/assets/lib/bootstrap/js/bootstrap.min.js"></script>
 </head>
 <style>
   .d-flex {
@@ -49,8 +49,8 @@ $settings = getSiteSettings();
 
 <body>
   <section id="container">
-    <?php require 'includes/templates/header.php'; ?>
-    <?php require 'includes/templates/navbar.php'; ?>
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/includes/templates/header.php'; ?>
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/includes/templates/navbar.php'; ?>
 
     <section id="main-content">
       <section class="wrapper">
@@ -133,7 +133,7 @@ function loadProfiles(page = 1) {
     const query = $('#search').val();
 
     $.ajax({
-        url: 'fetch_profiles.php',
+        url: '../fetch_profiles.php',
         method: 'POST',
         data: { query: query, page: page },
         success: function(data) {
@@ -150,11 +150,11 @@ function loadProfiles(page = 1) {
 </script>
 
   <!-- Additional JS libraries and common scripts -->
-  <script src="assets/lib/jquery/jquery.min.js"></script>
-  <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
-  <script class="include" type="text/javascript" src="assets/lib/jquery.dcjqaccordion.2.7.js"></script>
-  <script src="assets/lib/jquery.scrollTo.min.js"></script>
-  <script src="assets/lib/jquery.nicescroll.js" type="text/javascript"></script>
-  <script src="assets/lib/common-scripts.js"></script>
+  <script src="/assets/lib/jquery/jquery.min.js"></script>
+  <script src="/assets/lib/bootstrap/js/bootstrap.min.js"></script>
+  <script class="include" type="text/javascript" src="/assets/lib/jquery.dcjqaccordion.2.7.js"></script>
+  <script src="/assets/lib/jquery.scrollTo.min.js"></script>
+  <script src="/assets/lib/jquery.nicescroll.js" type="text/javascript"></script>
+  <script src="/assets/lib/common-scripts.js"></script>
 </body>
 </html>

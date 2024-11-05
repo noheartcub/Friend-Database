@@ -47,10 +47,10 @@ $settings = getSiteSettings();
 <head>
   <meta charset="utf-8">
   <title><?php echo htmlspecialchars($settings['site_title']); ?> - Delete Image</title>
-  <link href="assets/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="assets/lib/font-awesome/css/font-awesome.css" rel="stylesheet" />
-  <link href="assets/css/style.css" rel="stylesheet">
-  <script src="assets/lib/jquery/jquery.min.js"></script>
+  <link href="../assets/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/lib/font-awesome/css/font-awesome.css" rel="stylesheet" />
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <script src="../assets/lib/jquery/jquery.min.js"></script>
 </head>
 
 <body>
@@ -110,20 +110,20 @@ $settings = getSiteSettings();
     <!--footer end-->
   </section>
   <!-- js placed at the end of the document so the pages load faster -->
-  <script src="assets/lib/jquery/jquery.min.js"></script>
+  <script src="../assets/lib/jquery/jquery.min.js"></script>
 
-  <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
-  <script class="include" type="text/javascript" src="assets/lib/jquery.dcjqaccordion.2.7.js"></script>
-  <script src="assets/lib/jquery.scrollTo.min.js"></script>
-  <script src="assets/lib/jquery.nicescroll.js" type="text/javascript"></script>
-  <script src="assets/lib/jquery.sparkline.js"></script>
+  <script src="../assets/lib/bootstrap/js/bootstrap.min.js"></script>
+  <script class="include" type="text/javascript" src="../assets/lib/jquery.dcjqaccordion.2.7.js"></script>
+  <script src="../assets/lib/jquery.scrollTo.min.js"></script>
+  <script src="../assets/lib/jquery.nicescroll.js" type="text/javascript"></script>
+  <script src="../assets/lib/jquery.sparkline.js"></script>
   <!--common script for all pages-->
-  <script src="assets/lib/common-scripts.js"></script>
-  <script type="text/javascript" src="assets/lib/gritter/js/jquery.gritter.js"></script>
-  <script type="text/javascript" src="assets/lib/gritter-conf.js"></script>
+  <script src="../assets/lib/common-scripts.js"></script>
+  <script type="text/javascript" src="../assets/lib/gritter/js/jquery.gritter.js"></script>
+  <script type="text/javascript" src="../assets/lib/gritter-conf.js"></script>
   <!--script for this page-->
-  <script src="assets/lib/sparkline-chart.js"></script>
-  <script src="assets/lib/zabuto_calendar.js"></script>
+  <script src="../assets/lib/sparkline-chart.js"></script>
+  <script src="../assets/lib/zabuto_calendar.js"></script>
 
   <script>
     $(document).ready(function() {

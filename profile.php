@@ -1,8 +1,8 @@
 <?php
 // Start the session and include necessary files
 session_start();
-include_once 'includes/config.php';
-include_once 'includes/functions.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/functions.php';
 
 // Check if the user is logged in
 if (!isLoggedIn()) {
@@ -40,6 +40,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 // Get site settings and user time
 $settings = getSiteSettings();
 $userTime = getUserTime($user['timezone'] ?? 'UTC', $settings['time_format'] ?? '24-hour');
+define('BASE_PATH', '../../');
 ?>
 
 <!DOCTYPE html>
@@ -47,11 +48,11 @@ $userTime = getUserTime($user['timezone'] ?? 'UTC', $settings['time_format'] ?? 
 <head>
   <meta charset="utf-8">
   <title><?php echo htmlspecialchars($settings['site_title']); ?> - <?php echo htmlspecialchars($user['display_name']); ?></title>
-  <link href="assets/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="assets/lib/font-awesome/css/font-awesome.css" rel="stylesheet">
-  <link href="assets/css/style.css" rel="stylesheet">
-  <script src="assets/lib/jquery/jquery.min.js"></script>
-  <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
+  <link href="<?php echo BASE_PATH; ?>assets/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="<?php echo BASE_PATH; ?>assets/lib/font-awesome/css/font-awesome.css" rel="stylesheet">
+  <link href="<?php echo BASE_PATH; ?>assets/css/style.css" rel="stylesheet">
+  <script src="<?php echo BASE_PATH; ?>assets/lib/jquery/jquery.min.js"></script>
+  <script src="<?php echo BASE_PATH; ?>assets/lib/bootstrap/js/bootstrap.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
