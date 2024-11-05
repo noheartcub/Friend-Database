@@ -132,8 +132,8 @@ $images = $imagesStmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="project">
               <div class="photo-wrapper">
                 <div class="photo">
-                  <a class="fancybox" href="<?php echo htmlspecialchars($image['file_path']); ?>">
-                    <img class="img-responsive img-thumbnail" src="<?php echo htmlspecialchars($image['file_path']); ?>" alt="<?php echo htmlspecialchars($image['image_name']); ?>">
+                  <a class="fancybox" href="/<?php echo htmlspecialchars($image['file_path']); ?>">
+                    <img class="img-responsive img-thumbnail" src="../<?php echo htmlspecialchars($image['file_path']); ?>" alt="<?php echo htmlspecialchars($image['image_name']); ?>">
                   </a>
                 </div>
                 <div class="overlay">

@@ -8,21 +8,25 @@ include_once 'includes/functions.php';
 requireAdmin();
 
 // Fetch all users for the dropdown
-$usersStmt = $pdo->query("SELECT id, display_name FROM people"); // Assuming the users are in a 'users' table
+$usersStmt = $pdo->query("SELECT id, display_name FROM people");
 $users = $usersStmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Check if the form is submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Collect data from the form
-    $selectedUserId = $_POST['user_id']; // User selected for uploading image
-    $imageName = $_FILES['image']['name']; // Handle file upload separately
+    $selectedUserId = $_POST['user_id'];
+    $imageName = $_FILES['image']['name'];
 
     // Handle file upload for image
     if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
         $uploadDir = 'uploads/user_image/gallery/' . htmlspecialchars($selectedUserId) . '/';
-        if (!file_exists($uploadDir)) {
-            mkdir($uploadDir, 0777, true); // Create directory if it doesn't exist
+        
+        // Ensure the directory exists
+        if (!is_dir($uploadDir) && !mkdir($uploadDir, 0777, true) && !is_dir($uploadDir)) {
+            echo "Error creating upload directory.";
+            exit();
         }
+
         $uploadFile = $uploadDir . basename($imageName);
 
         // Move the uploaded file
@@ -34,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Execute the statement
             if ($stmt->execute()) {
-                header("Location: list_profile.php"); // Redirect to profile list after successful upload
+                header("Location: /profiles/list");
                 exit();
             } else {
                 echo "Error adding image to database.";
@@ -42,11 +46,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             echo "Error uploading the file.";
         }
+    } else {
+        echo "File upload error or no file selected.";
     }
 }
-?>
 
-<?php
 // Get site settings
 $settings = getSiteSettings();
 ?>
@@ -57,26 +61,11 @@ $settings = getSiteSettings();
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="">
-  <meta name="author" content="Dashboard">
-  <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
   <title><?php echo htmlspecialchars($settings['site_title']); ?> - Upload Image</title>
-
-  <!-- Favicons -->
-  <link href="../assets/img/favicon.png" rel="icon">
-  <link href="../assets/img/apple-touch-icon.png" rel="apple-touch-icon">
-
-  <!-- Bootstrap core CSS -->
-  <link href="../assets/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <!--external css-->
-  <link href="../assets/lib/font-awesome/css/font-awesome.css" rel="stylesheet" />
-  <link rel="stylesheet" type="text/css" href="../assets/css/zabuto_calendar.css">
-  <link rel="stylesheet" type="text/css" href="../assets/lib/gritter/css/jquery.gritter.css" />
-  <!-- Custom styles for this template -->
-  <link href="../assets/css/style.css" rel="stylesheet">
-  <link href="../assets/css/style-responsive.css" rel="stylesheet">
-  <script src="../assets/lib/chart-master/Chart.js"></script>
-
+  <link href="/assets/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/assets/lib/font-awesome/css/font-awesome.css" rel="stylesheet">
+  <link href="/assets/css/style.css" rel="stylesheet">
+  <link href="/assets/css/style-responsive.css" rel="stylesheet">
 </head>
 
 <body>
@@ -91,11 +80,12 @@ $settings = getSiteSettings();
         <div class="row mt">
           <div class="col-lg-12">
             <div class="form-panel">
-              <form action="upload_image_profile.php" method="POST" class="form-horizontal style-form" enctype="multipart/form-data">
+              <form action="" method="POST" class="form-horizontal style-form" enctype="multipart/form-data">
                 <div class="form-group">
                   <label class="control-label col-md-3">Select User <span style="color:red;">*</span></label>
                   <div class="col-md-4">
                     <select name="user_id" class="form-control" required>
+                      <option value="">-- Select User --</option>
                       <?php foreach ($users as $user): ?>
                         <option value="<?= htmlspecialchars($user['id']); ?>"><?= htmlspecialchars($user['display_name']); ?></option>
                       <?php endforeach; ?>
@@ -115,42 +105,28 @@ $settings = getSiteSettings();
                 </div>
               </form>
             </div>
-            <!-- /form-panel -->
           </div>
-          <!-- /col-lg-12 -->
         </div>
-        <!-- /row -->
       </section>
     </section>
     <!--main content end-->
+
     <!--footer start-->
     <footer class="site-footer">
       <div class="text-center">
-        <p>
-          &copy; Copyrights <strong><?php echo htmlspecialchars($settings['site_title']); ?></strong>. All Rights Reserved
-        </p>
-        <a href="index.html#" class="go-top">
-          <i class="fa fa-angle-up"></i>
-        </a>
+        <p>&copy; <?php echo date("Y"); ?> <strong><?php echo htmlspecialchars($settings['site_title']); ?></strong>. All Rights Reserved</p>
+        <a href="#" class="go-top"><i class="fa fa-angle-up"></i></a>
       </div>
     </footer>
     <!--footer end-->
   </section>
-  <!-- js placed at the end of the document so the pages load faster -->
-  <script src="../assets/lib/jquery/jquery.min.js"></script>
-  <script src="../assets/lib/bootstrap/js/bootstrap.min.js"></script>
-  <script class="include" type="text/javascript" src="../assets/lib/jquery.dcjqaccordion.2.7.js"></script>
-  <script src="../assets/lib/jquery.scrollTo.min.js"></script>
-  <script src="../assets/lib/jquery.nicescroll.js" type="text/javascript"></script>
-  <script src="../assets/lib/jquery.sparkline.js"></script>
-  <!--common script for all pages-->
-  <script src="../assets/lib/common-scripts.js"></script>
-  <script type="text/javascript" src="../assets/lib/gritter/js/jquery.gritter.js"></script>
-  <script type="text/javascript" src="../assets/lib/gritter-conf.js"></script>
-  <!--script for this page-->
-  <script src="../assets/lib/sparkline-chart.js"></script>
-  <script src="../assets/lib/zabuto_calendar.js"></script>
 
+  <!-- JS scripts -->
+  <script src="/assets/lib/jquery/jquery.min.js"></script>
+  <script src="/assets/lib/bootstrap/js/bootstrap.min.js"></script>
+  <script src="/assets/lib/jquery.dcjqaccordion.2.7.js"></script>
+  <script src="/assets/lib/jquery.scrollTo.min.js"></script>
+  <script src="/assets/lib/jquery.nicescroll.js"></script>
+  <script src="/assets/lib/common-scripts.js"></script>
 </body>
-
 </html>

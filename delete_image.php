@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_image'])) {
     $image = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($image) {
-        $filePath = $image['file_path'];
+        $filePath = $_SERVER['DOCUMENT_ROOT'] . '' . $image['file_path']; // Ensure the path is absolute
         if (file_exists($filePath)) {
             unlink($filePath); // Delete the image file
         }
@@ -41,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_image'])) {
 }
 $settings = getSiteSettings();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -65,7 +66,7 @@ $settings = getSiteSettings();
         <div class="row mt">
           <div class="col-lg-12">
             <div class="form-panel">
-              <form action="delete_image.php" method="POST" class="form-horizontal style-form">
+              <form action="" method="POST" class="form-horizontal style-form">
                 <div class="form-group">
                   <label class="control-label col-md-3">Select Image <span style="color:red;">*</span></label>
                   <div class="col-md-4">
@@ -131,13 +132,15 @@ $settings = getSiteSettings();
             var imageId = $(this).val();
             if (imageId) {
                 $.ajax({
-                    url: 'fetch_image_details.php',
+                    url: '/fetch_image_details.php',
                     type: 'POST',
                     data: { image_id: imageId },
                     success: function(data) {
                         var details = JSON.parse(data);
+
+                        // Prepend '../' to the file path
                         $('#detailImageId').text(details.id);
-                        $('#detailImage').attr('src', details.file_path);
+                        $('#detailImage').attr('src', '../' + details.file_path);
                         $('#detailUploaderId').text(details.uploader_id);
                         $('#imageDetails').show();
                     },
@@ -150,6 +153,7 @@ $settings = getSiteSettings();
             }
         });
     });
-  </script>
+</script>
+
 </body>
 </html>

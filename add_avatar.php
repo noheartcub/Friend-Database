@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Execute the statement
     if ($stmt->execute()) {
-        header("Location: list_avatars.php");
+        header("Location: /avatars/list");
         exit();
     } else {
         echo "Error adding avatar.";
@@ -62,16 +62,16 @@ $settings = getSiteSettings();
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title><?php echo htmlspecialchars(getSiteSettings()['site_title']); ?> - Add Avatar</title>
-  <link href="../assets/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="../assets/lib/font-awesome/css/font-awesome.css" rel="stylesheet" />
-  <link href="../assets/css/style.css" rel="stylesheet">
+  <title><?php echo htmlspecialchars($settings['site_title']); ?> - Add Avatar</title>
+  <link href="/assets/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/assets/lib/font-awesome/css/font-awesome.css" rel="stylesheet">
+  <link href="/assets/css/style.css" rel="stylesheet">
 </head>
 
 <body>
   <section id="container">
-    <?php require 'includes/templates/header.php'; ?>
-    <?php require 'includes/templates/navbar.php'; ?>
+    <?php include 'includes/templates/header.php'; ?>
+    <?php include 'includes/templates/navbar.php'; ?>
 
     <!--main content start-->
     <section id="main-content">
@@ -80,7 +80,7 @@ $settings = getSiteSettings();
         <div class="row mt">
           <div class="col-lg-12">
             <div class="form-panel">
-              <form action="add_avatar.php" method="POST" class="form-horizontal style-form" enctype="multipart/form-data">
+              <form action="" method="POST" class="form-horizontal style-form" enctype="multipart/form-data">
                 <div class="form-group">
                   <label class="control-label col-md-3">Avatar ID <span style="color:red;">*</span></label>
                   <div class="col-md-4">
@@ -137,79 +137,20 @@ $settings = getSiteSettings();
     <!--main content end-->
   </section>
 
-  <script src="../assets/lib/jquery/jquery.min.js"></script>
-  <script src="../assets/lib/bootstrap/js/bootstrap.min.js"></script>
-<!--footer start-->
-<footer class="site-footer">
-      <div class="text-center">
-        <p>
-          &copy; Copyrights <strong><?php echo htmlspecialchars($settings['site_title']); ?></strong>. All Rights Reserved
-        </p>
-        <a href="index.html#" class="go-top">
-          <i class="fa fa-angle-up"></i>
-          </a>
-      </div>
-    </footer>
-    <!--footer end-->
-  </section>
-  <!-- js placed at the end of the document so the pages load faster -->
-  <script src="../assets/lib/jquery/jquery.min.js"></script>
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="text-center">
+      <p>&copy; <?php echo htmlspecialchars($settings['site_title']); ?>. All Rights Reserved</p>
+      <a href="#" class="go-top"><i class="fa fa-angle-up"></i></a>
+    </div>
+  </footer>
 
-  <script src="../assets/lib/bootstrap/js/bootstrap.min.js"></script>
-  <script class="include" type="text/javascript" src="../assets/lib/jquery.dcjqaccordion.2.7.js"></script>
-  <script src="../assets/lib/jquery.scrollTo.min.js"></script>
-  <script src="../assets/lib/jquery.nicescroll.js" type="text/javascript"></script>
-  <script src="../assets/lib/jquery.sparkline.js"></script>
-  <!--common script for all pages-->
-  <script src="../assets/lib/common-scripts.js"></script>
-  <script type="text/javascript" src="../assets/lib/gritter/js/jquery.gritter.js"></script>
-  <script type="text/javascript" src="../assets/lib/gritter-conf.js"></script>
-  <!--script for this page-->
-  <script src="../assets/lib/sparkline-chart.js"></script>
-  <script src="../assets/lib/zabuto_calendar.js"></script>
-  <script type="application/javascript">
-    $(document).ready(function() {
-      $("#date-popover").popover({
-        html: true,
-        trigger: "manual"
-      });
-      $("#date-popover").hide();
-      $("#date-popover").click(function(e) {
-        $(this).hide();
-      });
-
-      $("#my-calendar").zabuto_calendar({
-        action: function() {
-          return myDateFunction(this.id, false);
-        },
-        action_nav: function() {
-          return myNavFunction(this.id);
-        },
-        ajax: {
-          url: "show_data.php?action=1",
-          modal: true
-        },
-        legend: [{
-            type: "text",
-            label: "Special event",
-            badge: "00"
-          },
-          {
-            type: "block",
-            label: "Regular event",
-          }
-        ]
-      });
-    });
-
-    function myNavFunction(id) {
-      $("#date-popover").hide();
-      var nav = $("#" + id).data("navigation");
-      var to = $("#" + id).data("to");
-      console.log('nav ' + nav + ' to: ' + to.month + '/' + to.year);
-    }
-  </script>
+  <!-- JS scripts -->
+  <script src="/assets/lib/jquery/jquery.min.js"></script>
+  <script src="/assets/lib/bootstrap/js/bootstrap.min.js"></script>
+  <script src="/assets/lib/jquery.dcjqaccordion.2.7.js"></script>
+  <script src="/assets/lib/jquery.scrollTo.min.js"></script>
+  <script src="/assets/lib/jquery.nicescroll.js"></script>
+  <script src="/assets/lib/common-scripts.js"></script>
 </body>
-
 </html>
-

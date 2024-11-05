@@ -141,7 +141,7 @@ $settings = getSiteSettings();
       <div class="row mt">
         <div class="col-lg-6 col-lg-offset-3">
           <div class="form-panel">
-            <form action="upload_image.php" method="POST" enctype="multipart/form-data" class="form-horizontal style-form">
+            <form action="" method="POST" enctype="multipart/form-data" class="form-horizontal style-form">
               <div class="form-group">
                 <label class="col-sm-3 control-label">Image Name</label>
                 <div class="col-sm-9">
@@ -151,7 +151,7 @@ $settings = getSiteSettings();
               <div class="form-group">
                 <label class="col-sm-3 control-label">Select Image</label>
                 <div class="col-sm-9">
-                  <input type="file" name="image" class="form-control" accept="image/*" required>
+                  <input type="file" name="../image" class="form-control" accept="image/*" required>
                 </div>
               </div>
               <div class="form-group">

@@ -26,6 +26,7 @@ RewriteRule ^avatars/delete$ delete_avatar.php [L]
 
 RewriteRule ^gallery/view$ view_images.php [L]
 RewriteRule ^gallery/upload$ upload_image.php [L]
+RewriteRule ^gallery/delete$ delete_image.php [L]
 
 RewriteRule ^events/register$ register_event.php [L]
 
