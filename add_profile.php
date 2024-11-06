@@ -123,7 +123,7 @@ $settings = getSiteSettings();
         <div class="row mt">
           <div class="col-lg-12">
             <div class="form-panel">
-              <form action="add_profile.php" method="POST" class="form-horizontal style-form" enctype="multipart/form-data">
+              <form action="" method="POST" class="form-horizontal style-form" enctype="multipart/form-data">
                 <div class="form-group">
                   <label class="control-label col-md-3">Display Name <span style="color:red;">*</span></label>
                   <div class="col-md-4">
